@@ -40,7 +40,15 @@ class FirebaseAuthAPI {
   }
 
   Future<String?> signUp(
-      String email, String password, String firstName, String lastName) async {
+      String email,
+      String password,
+      String firstName,
+      String lastName,
+      String userName,
+      String day,
+      String month,
+      String year,
+      String location) async {
     UserCredential credential;
     try {
       credential = await auth.createUserWithEmailAndPassword(
@@ -48,7 +56,8 @@ class FirebaseAuthAPI {
         password: password,
       );
       if (credential.user != null) {
-        saveUserToFirestore(credential.user?.uid, email, firstName, lastName);
+        saveUserToFirestore(credential.user?.uid, email, firstName, lastName,
+            userName, day, month, year, location);
       }
     } on FirebaseAuthException catch (e) {
       //possible to return something more useful
@@ -70,11 +79,32 @@ class FirebaseAuthAPI {
   }
 
   void saveUserToFirestore(
-      String? uid, String email, String firstName, String lastName) async {
+      String? uid,
+      String email,
+      String firstName,
+      String lastName,
+      String userName,
+      String day,
+      String month,
+      String year,
+      String location) async {
     try {
       await db.collection("users").doc(uid).set({"email": email});
       await db.collection("users").doc(uid).update({"firstName": firstName});
       await db.collection("users").doc(uid).update({"lastName": lastName});
+      await db.collection("users").doc(uid).update({"userName": userName});
+      await db.collection("users").doc(uid).update({
+        "birthday": {'day': day, 'month': month, 'year': year}
+      });
+      await db.collection("users").doc(uid).update({"location": location});
+      await db.collection("users").doc(uid).update({"bio": ""});
+      await db.collection("users").doc(uid).update({"friends": []});
+      await db
+          .collection("users")
+          .doc(uid)
+          .update({"receivedFriendRequests": []});
+      await db.collection("users").doc(uid).update({"sentFriendRequests": []});
+      await db.collection("users").doc(uid).update({"todos": []});
     } on FirebaseException catch (e) {
       print(e.message);
     }

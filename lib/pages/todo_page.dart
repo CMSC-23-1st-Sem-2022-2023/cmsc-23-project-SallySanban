@@ -77,7 +77,7 @@ class _TodoPageState extends State<TodoPage> {
                 child: ListTile(
                   title: Text(todo.title),
                   leading: Checkbox(
-                    value: todo.completed,
+                    value: todo.status,
                     onChanged: (bool? value) {
                       context
                           .read<TodoListProvider>()

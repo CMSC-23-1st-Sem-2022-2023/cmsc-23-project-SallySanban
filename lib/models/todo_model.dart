@@ -1,25 +1,31 @@
 import 'dart:convert';
 
 class Todo {
-  final int userId;
-  String? id;
+  final String? id;
   String title;
-  bool completed;
+  String description;
+  bool status;
+  Map<String, String> deadline;
+  bool notifications;
 
   Todo({
-    required this.userId,
     this.id,
     required this.title,
-    required this.completed,
+    required this.description,
+    required this.status,
+    required this.deadline,
+    required this.notifications,
   });
 
   // Factory constructor to instantiate object from json format
   factory Todo.fromJson(Map<String, dynamic> json) {
     return Todo(
-      userId: json['userId'],
       id: json['id'],
       title: json['title'],
-      completed: json['completed'],
+      description: json['description'],
+      status: json['status'],
+      deadline: json['deadline'],
+      notifications: json['notifications'],
     );
   }
 
@@ -30,9 +36,12 @@ class Todo {
 
   Map<String, dynamic> toJson(Todo todo) {
     return {
-      'userId': todo.userId,
+      'id': todo.id,
       'title': todo.title,
-      'completed': todo.completed,
+      'description': todo.description,
+      'status': todo.status,
+      'deadline': todo.deadline,
+      'notifications': todo.notifications,
     };
   }
 }

@@ -6,7 +6,8 @@ import 'package:project_teknomo/providers/todo_provider.dart';
 class TodoModal extends StatelessWidget {
   String type;
   // int todoIndex;
-  TextEditingController _formFieldController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   TodoModal({
     super.key,
@@ -41,12 +42,23 @@ class TodoModal extends StatelessWidget {
         }
       // Edit and add will have input field in them
       default:
-        return TextField(
-          controller: _formFieldController,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            // hintText: todoIndex != -1 ? todoItems[todoIndex].title : '',
-          ),
+        return Column(
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                // hintText: todoIndex != -1 ? todoItems[todoIndex].title : '',
+              ),
+            ),
+            TextField(
+              controller: descriptionController,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                // hintText: todoIndex != -1 ? todoItems[todoIndex].title : '',
+              ),
+            ),
+          ],
         );
     }
   }
@@ -61,9 +73,12 @@ class TodoModal extends StatelessWidget {
             {
               // Instantiate a todo objeect to be inserted, default userID will be 1, the id will be the next id in the list
               Todo temp = Todo(
-                  userId: 1,
-                  completed: false,
-                  title: _formFieldController.text);
+                title: titleController.text,
+                description: descriptionController.text,
+                status: false,
+                deadline: {'day': '30', 'month': '11', 'year': '2022'},
+                notifications: true,
+              );
 
               context.read<TodoListProvider>().addTodo(temp);
 
