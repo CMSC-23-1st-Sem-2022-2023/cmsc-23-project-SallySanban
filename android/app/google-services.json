@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "325543453167",
+    "project_id": "project-teknomo",
+    "storage_bucket": "project-teknomo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325543453167:android:7d937d9492628da1c4161a",
+        "android_client_info": {
+          "package_name": "com.example.project_teknomo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "325543453167-rpu1orge233mn9pfjpg93so00d4vt4nc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_FkntAK8rWVQd66SZ56BQg7V0jC9t7FI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "325543453167-rpu1orge233mn9pfjpg93so00d4vt4nc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
