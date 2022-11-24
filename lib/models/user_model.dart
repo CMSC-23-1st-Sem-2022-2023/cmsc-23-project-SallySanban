@@ -1,17 +1,15 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:dropdown_date_picker/dropdown_date_picker.dart';
 
 //class for user with user information
-class User {
+class UserData {
   final String? id;
   final String firstName;
   final String lastName;
   final String userName;
-  final Map<String, int> birthday;
+  final Map<String, dynamic> birthday;
   final String location;
   final String email;
-  final String password;
   String? bio;
   List? friends;
   List? receivedFriendRequests;
@@ -19,7 +17,7 @@ class User {
   List? todos;
 
   //constructor to initialize user
-  User({
+  UserData({
     this.id,
     required this.firstName,
     required this.lastName,
@@ -27,7 +25,6 @@ class User {
     required this.birthday,
     required this.location,
     required this.email,
-    required this.password,
     this.bio,
     this.friends,
     this.receivedFriendRequests,
@@ -36,8 +33,8 @@ class User {
   });
 
   //creates user from json information
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
       id: json['id'],
       firstName: json['firstName'],
       lastName: json['lastName'],
@@ -45,7 +42,6 @@ class User {
       birthday: json['birthday'],
       location: json['location'],
       email: json['email'],
-      password: json['password'],
       bio: json['bio'],
       friends: json['friends'],
       receivedFriendRequests: json['receivedFriendRequests'],
@@ -55,13 +51,13 @@ class User {
   }
 
   //?
-  static List<User> fromJsonArray(String jsonData) {
+  static List<UserData> fromJsonArray(String jsonData) {
     final Iterable<dynamic> data = jsonDecode(jsonData);
-    return data.map<User>((dynamic d) => User.fromJson(d)).toList();
+    return data.map<UserData>((dynamic d) => UserData.fromJson(d)).toList();
   }
 
   //turns user's information to json information
-  Map<String, dynamic> toJson(User user) {
+  Map<String, dynamic> toJson(UserData user) {
     return {
       'id': user.id,
       'firstName': user.firstName,
@@ -70,7 +66,6 @@ class User {
       'birthday': user.birthday,
       'location': user.location,
       'email': user.email,
-      'password': user.password,
       'bio': user.bio,
       'friends': user.friends,
       'receivedFriendRequests': user.receivedFriendRequests,

@@ -5,7 +5,7 @@ class Todo {
   String title;
   String description;
   bool status;
-  Map<String, String> deadline;
+  Map<String, dynamic> deadline;
   bool notifications;
 
   Todo({

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:project_teknomo/me.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
@@ -26,6 +27,14 @@ class FirebaseAuthAPI {
     try {
       final credential = await auth.signInWithEmailAndPassword(
           email: email, password: password);
+
+      auth.authStateChanges().listen((User? user) {
+        if (user == null) {
+          print("Not signed in");
+        } else {
+          Me.myId = user.uid;
+        }
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         //possible to return something more useful
@@ -89,7 +98,8 @@ class FirebaseAuthAPI {
       String year,
       String location) async {
     try {
-      await db.collection("users").doc(uid).set({"email": email});
+      await db.collection("users").doc(uid).set({"id": uid});
+      await db.collection("users").doc(uid).update({"email": email});
       await db.collection("users").doc(uid).update({"firstName": firstName});
       await db.collection("users").doc(uid).update({"lastName": lastName});
       await db.collection("users").doc(uid).update({"userName": userName});
@@ -105,6 +115,8 @@ class FirebaseAuthAPI {
           .update({"receivedFriendRequests": []});
       await db.collection("users").doc(uid).update({"sentFriendRequests": []});
       await db.collection("users").doc(uid).update({"todos": []});
+
+      Me.myId = uid!;
     } on FirebaseException catch (e) {
       print(e.message);
     }

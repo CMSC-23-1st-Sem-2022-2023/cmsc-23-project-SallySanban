@@ -5,17 +5,6 @@ import 'package:project_teknomo/models/user_model.dart';
 class FirebaseTodoAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
-  Future<String> addUser(Map<String, dynamic> user) async {
-    try {
-      final docRef = await db.collection("users").add(user);
-      await db.collection("users").doc(docRef.id).update({'id': docRef.id});
-
-      return "Successfully added user to database!";
-    } on FirebaseException catch (e) {
-      return "Failed with error '${e.code}: ${e.message}";
-    }
-  }
-
   //method for sending friend request
   Future<String> sendFriendRequest(String? id) async {
     try {
