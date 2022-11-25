@@ -4,6 +4,7 @@ import 'package:project_teknomo/models/user_model.dart';
 import 'package:project_teknomo/providers/user_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_teknomo/api/firebase_user_api.dart';
+import 'package:project_teknomo/me.dart';
 
 //page of profile of each user (can access each user info because user was passed)
 class ProfilePage extends StatefulWidget {
@@ -78,72 +79,82 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             },
           ),
-          Divider(
-            height: 20,
-            thickness: 1,
-            indent: 10,
-            endIndent: 10,
-            color: Colors.grey[500],
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-          ),
-          Text(
-            "Pending Friend Requests",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
+          if (context.read<UserProvider>().selected.id == Me.myId)
+            Divider(
+              height: 20,
+              thickness: 1,
+              indent: 10,
+              endIndent: 10,
+              color: Colors.grey[500],
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-          ),
+          if (context.read<UserProvider>().selected.id == Me.myId)
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+            ),
+          if (context.read<UserProvider>().selected.id == Me.myId)
+            Text(
+              "Pending Friend Requests",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          if (context.read<UserProvider>().selected.id == Me.myId)
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+            ),
           //accesses list of received friend requests of the user passed
-          FutureBuilder(
-            future: loopThroughReceivedRequests(
-              context.read<UserProvider>().selected.receivedFriendRequests,
+          if (context.read<UserProvider>().selected.id == Me.myId)
+            FutureBuilder(
+              future: loopThroughReceivedRequests(
+                context.read<UserProvider>().selected.receivedFriendRequests,
+              ),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (!snapshot.hasData) {
+                  return Text("");
+                } else {
+                  return snapshot.data!;
+                }
+              },
             ),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if (!snapshot.hasData) {
-                return Text("");
-              } else {
-                return snapshot.data!;
-              }
-            },
-          ),
-          Divider(
-            height: 20,
-            thickness: 1,
-            indent: 10,
-            endIndent: 10,
-            color: Colors.grey[500],
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-          ),
-          Text(
-            "Sent Friend Requests",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
+          if (context.read<UserProvider>().selected.id == Me.myId)
+            Divider(
+              height: 20,
+              thickness: 1,
+              indent: 10,
+              endIndent: 10,
+              color: Colors.grey[500],
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-          ),
+          if (context.read<UserProvider>().selected.id == Me.myId)
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+            ),
+          if (context.read<UserProvider>().selected.id == Me.myId)
+            Text(
+              "Sent Friend Requests",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          if (context.read<UserProvider>().selected.id == Me.myId)
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+            ),
           //accesses list of sent friend requests of the user passed
-          FutureBuilder(
-            future: loopThroughSentRequests(
-              context.read<UserProvider>().selected.sentFriendRequests,
+          if (context.read<UserProvider>().selected.id == Me.myId)
+            FutureBuilder(
+              future: loopThroughSentRequests(
+                context.read<UserProvider>().selected.sentFriendRequests,
+              ),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (!snapshot.hasData) {
+                  return Text("");
+                } else {
+                  return snapshot.data!;
+                }
+              },
             ),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if (!snapshot.hasData) {
-                return Text("");
-              } else {
-                return snapshot.data!;
-              }
-            },
-          ),
           Divider(
             height: 20,
             thickness: 1,

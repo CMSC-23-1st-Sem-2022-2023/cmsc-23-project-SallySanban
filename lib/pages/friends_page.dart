@@ -87,10 +87,10 @@ class _FriendsPageState extends State<FriendsPage> {
                       child: Text("No Users Found"),
                     );
                   }
-                  print("111111111");
+
                   //all the users
                   documents = snapshot.data!.docs;
-                  print("2222222222");
+
                   //filters the users depending on what was searched [5] [6]
                   if (searchController.text.length > 0) {
                     documents = snapshot.data!.docs
@@ -99,7 +99,7 @@ class _FriendsPageState extends State<FriendsPage> {
                             searchController.text)
                         .toList();
                   }
-                  print("33333333");
+
                   //shows the users (shows filtered users if there is a search)
                   return ListView.separated(
                     reverse: true,
@@ -111,38 +111,34 @@ class _FriendsPageState extends State<FriendsPage> {
                     },
                     itemBuilder: ((context, index) {
                       //each user in document (with accessible info)
-                      print(snapshot.data?.docs[index].data().toString());
+                      //print(snapshot.data?.docs[index].data().toString()); THIS PRINT SAVED MY LIFE
                       UserData friend = UserData.fromJson(
                           snapshot.data?.docs[index].data()
                               as Map<String, dynamic>);
-                      print("6666666");
+
                       //user info for you [3]
-                      // UserData me = UserData.fromJson(snapshot.data?.docs
-                      //     .firstWhere((doc) => doc.id == Me.myId)
-                      //     .data() as Map<String, dynamic>);
-                      // if (friend.id == Me.myId) {
-                      //   print("pumasok");
-                      //   UserData self = friend;
+                      UserData self = UserData.fromJson(snapshot.data?.docs
+                          .firstWhere((doc) => doc.id == Me.myId)
+                          .data() as Map<String, dynamic>);
 
-                      //   //initializes to 0 for every user
-                      //   int checkIfFriend = 0; //0 if not in friends list
-                      //   int checkIfRequestSent = 0; //0 if not requested
-                      //   //checks if user is already your friend or you have already sent a friend request to this user
-                      //   //whether the add friend/unfriend button appears depends on this
-                      //   for (var i = 0; i < self.friends!.length; i++) {
-                      //     if (self.friends![i] == friend.id) {
-                      //       checkIfFriend = 1; //1 if already in friends
-                      //     }
-                      //   }
+                      //initializes to 0 for every user
+                      int checkIfFriend = 0; //0 if not in friends list
+                      int checkIfRequestSent = 0; //0 if not requested
+                      //checks if user is already your friend or you have already sent a friend request to this user
+                      //whether the add friend/unfriend button appears depends on this
+                      for (var i = 0; i < self.friends!.length; i++) {
+                        if (self.friends![i] == friend.id) {
+                          checkIfFriend = 1; //1 if already in friends
+                        }
+                      }
 
-                      //   for (var i = 0;
-                      //       i < self.sentFriendRequests!.length;
-                      //       i++) {
-                      //     if (self.sentFriendRequests![i] == friend.id) {
-                      //       checkIfRequestSent = 1; //1 if request already sent
-                      //     }
-                      //   }
-                      // }
+                      for (var i = 0;
+                          i < self.sentFriendRequests!.length;
+                          i++) {
+                        if (self.sentFriendRequests![i] == friend.id) {
+                          checkIfRequestSent = 1; //1 if request already sent
+                        }
+                      }
 
                       return ListTile(
                         title: Text(friend.userName),
@@ -152,35 +148,35 @@ class _FriendsPageState extends State<FriendsPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             //shows add friend only if not friend yet, havent sent friend req yet, not you [4]
-                            // if (checkIfFriend == 0 &&
-                            //     checkIfRequestSent == 0 &&
-                            //     friend.id != me.id)
-                            IconButton(
-                              onPressed: () {
-                                context
-                                    .read<UserProvider>()
-                                    //makes sure the friend clicked on's user is passed to sendFriendRequest
-                                    .changeSelectedUser(friend);
-                                context //calls sendFriendRequest
-                                    .read<UserProvider>()
-                                    .sendFriendRequest();
-                              },
-                              icon: const Icon(Icons.add_circle),
-                            ),
+                            if (checkIfFriend == 0 &&
+                                checkIfRequestSent == 0 &&
+                                friend.id != self.id)
+                              IconButton(
+                                onPressed: () {
+                                  context
+                                      .read<UserProvider>()
+                                      //makes sure the friend clicked on's user is passed to sendFriendRequest
+                                      .changeSelectedUser(friend);
+                                  context //calls sendFriendRequest
+                                      .read<UserProvider>()
+                                      .sendFriendRequest();
+                                },
+                                icon: const Icon(Icons.add_circle),
+                              ),
                             //shows unfriend only if already friend, not you [4]
-                            //if (checkIfFriend == 1 && friend.id != me.id)
-                            IconButton(
-                              onPressed: () {
-                                context
-                                    .read<UserProvider>()
-                                    //makes sure the friend clicked on's user is passed to unfriend
-                                    .changeSelectedUser(friend);
-                                context
-                                    .read<UserProvider>()
-                                    .unfriend(); //calls unfriend
-                              },
-                              icon: const Icon(Icons.remove_circle),
-                            ),
+                            if (checkIfFriend == 1 && friend.id != self.id)
+                              IconButton(
+                                onPressed: () {
+                                  context
+                                      .read<UserProvider>()
+                                      //makes sure the friend clicked on's user is passed to unfriend
+                                      .changeSelectedUser(friend);
+                                  context
+                                      .read<UserProvider>()
+                                      .unfriend(); //calls unfriend
+                                },
+                                icon: const Icon(Icons.remove_circle),
+                              ),
                           ],
                         ),
                         //[2]
