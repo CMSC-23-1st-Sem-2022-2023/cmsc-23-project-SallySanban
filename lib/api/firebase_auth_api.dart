@@ -108,25 +108,20 @@ class FirebaseAuthAPI {
       String year,
       String location) async {
     try {
-      await db.collection("users").doc(uid).set({"id": uid});
-      await db.collection("users").doc(uid).update({"email": email});
-      await db.collection("users").doc(uid).update({"firstName": firstName});
-      await db.collection("users").doc(uid).update({"lastName": lastName});
-      await db.collection("users").doc(uid).update({"userName": userName});
-      await db.collection("users").doc(uid).update({
-        "birthday": {'day': day, 'month': month, 'year': year}
+      await db.collection("users").doc(uid).set({
+        "id": uid,
+        "email": email,
+        "firstName": firstName,
+        "lastName": lastName,
+        "userName": userName,
+        "birthday": {'day': day, 'month': month, 'year': year},
+        "location": location,
+        "bio": "",
+        "friends": [],
+        "receivedFriendRequests": [],
+        "sentFriendRequests": [],
+        "todos": []
       });
-      await db.collection("users").doc(uid).update({"location": location});
-      await db.collection("users").doc(uid).update({"bio": ""});
-      await db.collection("users").doc(uid).update({"friends": []});
-      await db
-          .collection("users")
-          .doc(uid)
-          .update({"receivedFriendRequests": []});
-      await db.collection("users").doc(uid).update({"sentFriendRequests": []});
-      await db.collection("users").doc(uid).update({"todos": []});
-
-      //Me.myId = uid!;
     } on FirebaseException catch (e) {
       print(e.message);
     }

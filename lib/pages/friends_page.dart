@@ -87,10 +87,10 @@ class _FriendsPageState extends State<FriendsPage> {
                       child: Text("No Users Found"),
                     );
                   }
-
+                  print("111111111");
                   //all the users
                   documents = snapshot.data!.docs;
-
+                  print("2222222222");
                   //filters the users depending on what was searched [5] [6]
                   if (searchController.text.length > 0) {
                     documents = snapshot.data!.docs
@@ -99,7 +99,7 @@ class _FriendsPageState extends State<FriendsPage> {
                             searchController.text)
                         .toList();
                   }
-
+                  print("33333333");
                   //shows the users (shows filtered users if there is a search)
                   return ListView.separated(
                     reverse: true,
@@ -111,10 +111,11 @@ class _FriendsPageState extends State<FriendsPage> {
                     },
                     itemBuilder: ((context, index) {
                       //each user in document (with accessible info)
-
+                      print(snapshot.data?.docs[index].data().toString());
                       UserData friend = UserData.fromJson(
                           snapshot.data?.docs[index].data()
                               as Map<String, dynamic>);
+                      print("6666666");
                       //user info for you [3]
                       // UserData me = UserData.fromJson(snapshot.data?.docs
                       //     .firstWhere((doc) => doc.id == Me.myId)
