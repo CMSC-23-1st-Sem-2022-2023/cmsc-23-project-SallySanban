@@ -67,6 +67,16 @@ class FirebaseAuthAPI {
       if (credential.user != null) {
         saveUserToFirestore(credential.user?.uid, email, firstName, lastName,
             userName, day, month, year, location);
+
+        auth.authStateChanges().listen(
+          (User? user) {
+            if (user == null) {
+              print("Not signed in");
+            } else {
+              Me.myId = user.uid;
+            }
+          },
+        );
       }
     } on FirebaseAuthException catch (e) {
       //possible to return something more useful
@@ -116,7 +126,7 @@ class FirebaseAuthAPI {
       await db.collection("users").doc(uid).update({"sentFriendRequests": []});
       await db.collection("users").doc(uid).update({"todos": []});
 
-      Me.myId = uid!;
+      //Me.myId = uid!;
     } on FirebaseException catch (e) {
       print(e.message);
     }

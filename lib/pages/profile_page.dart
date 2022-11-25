@@ -209,8 +209,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   IconButton(
                     onPressed: () {
                       //makes sure user passed is passed to accept friend
-                      context.read<UserProvider>().changeSelectedUser(
-                          context.read<UserProvider>().selected);
+                      context
+                          .read<UserProvider>()
+                          .changeSelectedUser(UserData.fromJson(dataFriend));
                       //calls accept friend
                       context.read<UserProvider>().acceptFriend();
                     },
@@ -219,8 +220,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   IconButton(
                     onPressed: () {
                       //makes sure user passed is passed to decline friend
-                      context.read<UserProvider>().changeSelectedUser(
-                          context.read<UserProvider>().selected);
+                      context
+                          .read<UserProvider>()
+                          .changeSelectedUser(UserData.fromJson(dataFriend));
                       //calls decline friend
                       context.read<UserProvider>().declineFriend();
                     },

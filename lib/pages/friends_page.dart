@@ -113,26 +113,33 @@ class _FriendsPageState extends State<FriendsPage> {
                       //each user in document (with accessible info)
 
                       UserData friend = UserData.fromJson(
-                          documents[index].data() as Map<String, dynamic>);
+                          snapshot.data?.docs[index].data()
+                              as Map<String, dynamic>);
                       //user info for you [3]
                       // UserData me = UserData.fromJson(snapshot.data?.docs
                       //     .firstWhere((doc) => doc.id == Me.myId)
                       //     .data() as Map<String, dynamic>);
+                      // if (friend.id == Me.myId) {
+                      //   print("pumasok");
+                      //   UserData self = friend;
 
-                      //initializes to 0 for every user
-                      int checkIfFriend = 0; //0 if not in friends list
-                      int checkIfRequestSent = 0; //0 if not requested
-                      //checks if user is already your friend or you have already sent a friend request to this user
-                      //whether the add friend/unfriend button appears depends on this
-                      // for (var i = 0; i < me.friends!.length; i++) {
-                      //   if (me.friends![i] == friend.id) {
-                      //     checkIfFriend = 1; //1 if already in friends
+                      //   //initializes to 0 for every user
+                      //   int checkIfFriend = 0; //0 if not in friends list
+                      //   int checkIfRequestSent = 0; //0 if not requested
+                      //   //checks if user is already your friend or you have already sent a friend request to this user
+                      //   //whether the add friend/unfriend button appears depends on this
+                      //   for (var i = 0; i < self.friends!.length; i++) {
+                      //     if (self.friends![i] == friend.id) {
+                      //       checkIfFriend = 1; //1 if already in friends
+                      //     }
                       //   }
-                      // }
 
-                      // for (var i = 0; i < me.sentFriendRequests!.length; i++) {
-                      //   if (me.sentFriendRequests![i] == friend.id) {
-                      //     checkIfRequestSent = 1; //1 if request already sent
+                      //   for (var i = 0;
+                      //       i < self.sentFriendRequests!.length;
+                      //       i++) {
+                      //     if (self.sentFriendRequests![i] == friend.id) {
+                      //       checkIfRequestSent = 1; //1 if request already sent
+                      //     }
                       //   }
                       // }
 

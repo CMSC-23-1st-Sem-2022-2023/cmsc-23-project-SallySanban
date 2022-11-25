@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_teknomo/api/firebase_user_api.dart';
+import 'package:project_teknomo/me.dart';
 import 'package:project_teknomo/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -30,28 +31,31 @@ class UserProvider with ChangeNotifier {
 
   //calls firebase's send friend request
   void sendFriendRequest() async {
-    String message = await firebaseService.sendFriendRequest(_selectedUser!.id);
+    String message =
+        await firebaseService.sendFriendRequest(_selectedUser!.id, Me.myId);
     print(message);
     notifyListeners();
   }
 
   //calls firebase's unfriend
   void unfriend() async {
-    String message = await firebaseService.unfriend(_selectedUser!.id);
+    String message = await firebaseService.unfriend(_selectedUser!.id, Me.myId);
     print(message);
     notifyListeners();
   }
 
   //calls firebase's accept friend
   void acceptFriend() async {
-    String message = await firebaseService.acceptFriend(_selectedUser!.id);
+    String message =
+        await firebaseService.acceptFriend(_selectedUser!.id, Me.myId);
     print(message);
     notifyListeners();
   }
 
   //calls firebase's decline friend
   void declineFriend() async {
-    String message = await firebaseService.declineFriend(_selectedUser!.id);
+    String message =
+        await firebaseService.declineFriend(_selectedUser!.id, Me.myId);
     print(message);
     notifyListeners();
   }
