@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:project_teknomo/models/user_model.dart';
+import 'package:project_teknomo/pages/todo_dialog.dart';
 import 'package:project_teknomo/providers/user_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_teknomo/api/firebase_user_api.dart';
@@ -189,6 +190,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
+      floatingActionButton: floatingActionButton(),
     );
   }
 
@@ -335,6 +337,24 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       }
       return Column(children: list);
+    }
+  }
+
+  Widget floatingActionButton() {
+    if (context.read<UserProvider>().selected.id == Me.myId) {
+      return FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => TodoDialog(
+              type: 'Add',
+            ),
+          );
+        },
+        child: const Icon(Icons.add_outlined),
+      );
+    } else {
+      return Container();
     }
   }
 }
