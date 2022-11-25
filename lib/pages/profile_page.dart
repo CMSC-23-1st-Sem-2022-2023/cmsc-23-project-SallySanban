@@ -144,6 +144,38 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             },
           ),
+          Divider(
+            height: 20,
+            thickness: 1,
+            indent: 10,
+            endIndent: 10,
+            color: Colors.grey[500],
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 10),
+          ),
+          Text(
+            "Todos",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 10),
+          ),
+          FutureBuilder(
+            future: loopThroughTodos(
+              context.read<UserProvider>().selected.todos,
+            ),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (!snapshot.hasData) {
+                return Text("");
+              } else {
+                return snapshot.data!;
+              }
+            },
+          ),
         ],
       ),
     );
@@ -255,6 +287,34 @@ class _ProfilePageState extends State<ProfilePage> {
             list.add(
               Text(
                 "${dataFriend['firstName']} ${dataFriend['lastName']}",
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+            );
+          },
+        );
+      }
+      return Column(children: list);
+    }
+  }
+
+  //loops through sent friend requests
+  Future<Widget> loopThroughTodos(List? todos) async {
+    List<Widget> list = [];
+
+    if (todos == null) {
+      return Text("");
+    } else {
+      for (var i = 0; i < todos.length; i++) {
+        final docRefTodo = FirebaseTodoAPI.db.collection("todos").doc(todos[i]);
+        await docRefTodo.get().then(
+          (DocumentSnapshot doc) async {
+            final dataTodo = doc.data() as Map<String, dynamic>;
+
+            list.add(
+              Text(
+                "${dataTodo['title']}",
                 style: TextStyle(
                   fontSize: 18,
                 ),
