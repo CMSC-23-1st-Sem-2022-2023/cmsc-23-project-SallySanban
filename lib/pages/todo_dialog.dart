@@ -8,6 +8,9 @@ class TodoDialog extends StatelessWidget {
   // int todoIndex;
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController dayController = TextEditingController();
+  TextEditingController monthController = TextEditingController();
+  TextEditingController yearController = TextEditingController();
 
   TodoDialog({
     super.key,
@@ -42,27 +45,63 @@ class TodoDialog extends StatelessWidget {
         }
       // Edit and add will have input field in them
       default:
-        return Column(
-          children: [
-            Center(
-              child: TextField(
-                controller: titleController,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  // hintText: todoIndex != -1 ? todoItems[todoIndex].title : '',
+        return Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(
+                    hintText: "Task Name",
+                  ),
                 ),
               ),
-            ),
-            Center(
-              child: TextField(
-                controller: descriptionController,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  // hintText: todoIndex != -1 ? todoItems[todoIndex].title : '',
+              Center(
+                child: TextField(
+                  controller: descriptionController,
+                  decoration: InputDecoration(
+                    hintText: "Task Description",
+                  ),
                 ),
               ),
-            ),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  new Flexible(
+                    child: TextField(
+                      controller: dayController,
+                      decoration: InputDecoration(
+                        hintText: "Day",
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20.0,
+                  ),
+                  new Flexible(
+                    child: TextField(
+                      controller: monthController,
+                      decoration: InputDecoration(
+                        hintText: "Month",
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20.0,
+                  ),
+                  new Flexible(
+                    child: TextField(
+                      controller: yearController,
+                      decoration: InputDecoration(
+                        hintText: "Year",
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
     }
   }
@@ -75,31 +114,33 @@ class TodoDialog extends StatelessWidget {
         switch (type) {
           case 'Add':
             {
-              // Instantiate a todo objeect to be inserted, default userID will be 1, the id will be the next id in the list
-              Todo temp = Todo(
+              // Instantiate a todo object to be inserted, default userID will be 1, the id will be the next id in the list
+              Todo todo = Todo(
                 title: titleController.text,
                 description: descriptionController.text,
                 status: false,
-                deadline: {'day': '30', 'month': '11', 'year': '2022'},
+                deadline: {
+                  'day': dayController.text,
+                  'month': monthController.text,
+                  'year': yearController.text
+                },
                 notifications: true,
               );
 
-              context.read<TodoListProvider>().addTodo(temp);
+              context.read<TodoListProvider>().addTodo(todo);
 
               // Remove dialog after adding
               Navigator.of(context).pop();
               break;
             }
-          // case 'Edit':
-          //   {
-          //     context
-          //         .read<TodoListProvider>()
-          //         .editTodo(todoIndex, _formFieldController.text);
+          case 'Edit':
+            {
+              context.read<TodoListProvider>().editTodo(titleController.text);
 
-          //     // Remove dialog after editing
-          //     Navigator.of(context).pop();
-          //     break;
-          //   }
+              // Remove dialog after editing
+              Navigator.of(context).pop();
+              break;
+            }
           case 'Delete':
             {
               context.read<TodoListProvider>().deleteTodo();

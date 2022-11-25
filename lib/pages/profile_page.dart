@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:project_teknomo/models/user_model.dart';
+import 'package:project_teknomo/models/todo_model.dart';
 import 'package:project_teknomo/pages/todo_dialog.dart';
 import 'package:project_teknomo/providers/user_provider.dart';
+import 'package:project_teknomo/providers/todo_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_teknomo/api/firebase_user_api.dart';
 import 'package:project_teknomo/me.dart';
@@ -326,10 +328,49 @@ class _ProfilePageState extends State<ProfilePage> {
             final dataTodo = doc.data() as Map<String, dynamic>;
 
             list.add(
-              Text(
-                "${dataTodo['title']}",
-                style: TextStyle(
-                  fontSize: 18,
+              ListTile(
+                title: Text(dataTodo['title']),
+                leading: Checkbox(
+                  value: dataTodo['status'],
+                  onChanged: (bool? value) {
+                    context
+                        .read<TodoListProvider>()
+                        .changeSelectedTodo(Todo.fromJson(dataTodo));
+                    context.read<TodoListProvider>().toggleStatus(value!);
+                  },
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        context
+                            .read<TodoListProvider>()
+                            .changeSelectedTodo(Todo.fromJson(dataTodo));
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => TodoDialog(
+                            type: 'Edit',
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.create_outlined),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        context
+                            .read<TodoListProvider>()
+                            .changeSelectedTodo(Todo.fromJson(dataTodo));
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => TodoDialog(
+                            type: 'Delete',
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.delete_outlined),
+                    )
+                  ],
                 ),
               ),
             );
