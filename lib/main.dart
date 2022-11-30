@@ -5,6 +5,7 @@ import 'package:project_teknomo/providers/user_provider.dart';
 import 'package:project_teknomo/providers/auth_provider.dart';
 import 'package:project_teknomo/pages/todo_page.dart';
 import 'package:project_teknomo/pages/login.dart';
+import 'package:project_teknomo/pages/signup_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:project_teknomo/pages/profile_page.dart';
@@ -55,7 +56,7 @@ class AuthWrapper extends StatelessWidget {
     if (context.watch<AuthProvider>().isAuthenticated) {
       return const FriendsPage();
     } else {
-      return const LoginPage();
+      return const SignupPage();
     }
   }
 }

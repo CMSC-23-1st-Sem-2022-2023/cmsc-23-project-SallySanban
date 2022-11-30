@@ -41,7 +41,14 @@ class _FriendsPageState extends State<FriendsPage> {
         ),
       ),
       appBar: AppBar(
-        title: Text("Users"),
+        title: Text('App Bar!'),
+        flexibleSpace: SafeArea(
+          child: Image(
+            image: AssetImage('images/theme.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
       ),
       body: ListView(
         children: [
