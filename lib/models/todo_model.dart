@@ -7,6 +7,8 @@ class Todo {
   bool status;
   Map<String, dynamic> deadline;
   bool notifications;
+  String lastEditedBy;
+  String lastEdited;
 
   Todo({
     this.id,
@@ -15,6 +17,8 @@ class Todo {
     required this.status,
     required this.deadline,
     required this.notifications,
+    required this.lastEditedBy,
+    required this.lastEdited,
   });
 
   // Factory constructor to instantiate object from json format
@@ -26,6 +30,8 @@ class Todo {
       status: json['status'],
       deadline: json['deadline'],
       notifications: json['notifications'],
+      lastEditedBy: json['lastEditedBy'],
+      lastEdited: json['lastEdited'],
     );
   }
 
@@ -42,6 +48,8 @@ class Todo {
       'status': todo.status,
       'deadline': todo.deadline,
       'notifications': todo.notifications,
+      'lastEditedBy': todo.lastEditedBy,
+      'lastEdited': todo.lastEdited,
     };
   }
 }

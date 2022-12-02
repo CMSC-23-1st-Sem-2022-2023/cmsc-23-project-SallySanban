@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project_teknomo/api/firebase_auth_api.dart';
-import 'package:project_teknomo/me.dart';
+import 'package:project_teknomo/classes/me.dart';
 
 class AuthProvider with ChangeNotifier {
   late FirebaseAuthAPI authService;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_teknomo/api/firebase_user_api.dart';
-import 'package:project_teknomo/me.dart';
+import 'package:project_teknomo/classes/me.dart';
 import 'package:project_teknomo/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

@@ -3,7 +3,7 @@ import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project_teknomo/api/firebase_auth_api.dart';
-import 'package:project_teknomo/me.dart';
+import 'package:project_teknomo/classes/me.dart';
 
 class FirebaseTodoAPI {
   //comment out when testing
@@ -19,7 +19,7 @@ class FirebaseTodoAPI {
         'todos': FieldValue.arrayUnion([docRef.id]),
       });
 
-      return "Successfully added todo!";
+      return "Successfully added task!";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
@@ -33,17 +33,17 @@ class FirebaseTodoAPI {
         'todos': FieldValue.arrayRemove([id]),
       });
 
-      return "Successfully deleted todo!";
+      return "Successfully deleted task!";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
   }
 
-  Future<String> editTodo(String? id, String title) async {
+  Future<String> editTodo(String? id, String toEdit, dynamic edited) async {
     try {
-      await db.collection("todos").doc(id).update({"title": title});
+      await db.collection("todos").doc(id).update({"${toEdit}": edited});
 
-      return "Successfully edited todo!";
+      return "Successfully edited task!";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
@@ -53,7 +53,7 @@ class FirebaseTodoAPI {
     try {
       await db.collection("todos").doc(id).update({"status": status});
 
-      return "Successfully edited todo!";
+      return "Successfully edited status of task!";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }

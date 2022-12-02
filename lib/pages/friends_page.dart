@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:project_teknomo/models/user_model.dart';
-import 'package:project_teknomo/me.dart';
+import 'package:project_teknomo/classes/me.dart';
 import 'package:project_teknomo/providers/user_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_teknomo/providers/auth_provider.dart';

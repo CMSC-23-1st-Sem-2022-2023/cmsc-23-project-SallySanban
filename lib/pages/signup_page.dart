@@ -267,6 +267,9 @@ class _SignupPageState extends State<SignupPage> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.pink,
+                            ),
                           ),
                         ),
                       ],
@@ -276,9 +279,6 @@ class _SignupPageState extends State<SignupPage> {
               }
             }
           },
-          // } else {
-          //   Navigator.pop(context);
-          // }
           child: const Text('Sign up', style: TextStyle(color: Colors.white)),
         ));
 
@@ -309,6 +309,9 @@ class _SignupPageState extends State<SignupPage> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.pink,
+                          ),
                         ),
                       ),
                     ],
@@ -331,6 +334,7 @@ class _SignupPageState extends State<SignupPage> {
               shrinkWrap: true,
               padding: const EdgeInsets.only(left: 40.0, right: 40.0),
               children: [
+                Padding(padding: EdgeInsets.only(bottom: 10)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -343,7 +347,14 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 Padding(padding: EdgeInsets.only(bottom: 10)),
                 userName,
-                Padding(padding: EdgeInsets.only(bottom: 10)),
+                Padding(padding: EdgeInsets.only(bottom: 20)),
+                Text(
+                  "Birthday",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 115, 112, 112),
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -381,7 +392,7 @@ class _SignupPageState extends State<SignupPage> {
                 emailLogin,
                 Padding(padding: EdgeInsets.only(bottom: 10)),
                 passwordLogin,
-                Padding(padding: EdgeInsets.only(bottom: 70)),
+                Padding(padding: EdgeInsets.only(bottom: 60)),
                 loginButton,
               ],
             ),

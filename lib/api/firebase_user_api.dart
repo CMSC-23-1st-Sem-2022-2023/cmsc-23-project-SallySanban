@@ -16,7 +16,7 @@ class FirebaseTodoAPI {
         'receivedFriendRequests': FieldValue.arrayUnion([idSelf])
       });
 
-      return "Successfully added todo!";
+      return "Successfully sent friend request!";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
@@ -35,7 +35,7 @@ class FirebaseTodoAPI {
         'sentFriendRequests': FieldValue.arrayRemove([idSelf]),
       });
 
-      return "Successfully added todo!";
+      return "Successfully accepted friend request!";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
@@ -51,7 +51,7 @@ class FirebaseTodoAPI {
         'sentFriendRequests': FieldValue.arrayRemove([idSelf]),
       });
 
-      return "Successfully added todo!";
+      return "Successfully declined friend request!";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
@@ -67,7 +67,7 @@ class FirebaseTodoAPI {
         'friends': FieldValue.arrayRemove([idSelf]),
       });
 
-      return "Successfully removed todo!";
+      return "Successfully unfriended!";
     } on FirebaseException catch (e) {
       return "Failed with error '${e.code}: ${e.message}";
     }
