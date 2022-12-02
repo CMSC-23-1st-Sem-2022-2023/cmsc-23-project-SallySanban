@@ -59,9 +59,8 @@ class PopUp extends StatelessWidget {
                   child: TextField(
                     controller: bioController,
                     decoration: InputDecoration(
-                      hintText: "Bio",
+                      hintText: "Enter new bio",
                     ),
-                    keyboardType: TextInputType.multiline,
                   ),
                 ),
               ],
