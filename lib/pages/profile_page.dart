@@ -285,36 +285,29 @@ class _ProfilePageState extends State<ProfilePage>
             list.add(
               Column(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                  ListTile(
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.account_circle_rounded,
-                            size: 50.0, color: Colors.pink),
-                        Padding(padding: EdgeInsets.only(right: 10)),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${dataFriend['firstName']} ${dataFriend['lastName']}",
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              "${dataFriend['userName']}",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey[500],
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ],
+                        Text(
+                          "${dataFriend['firstName']} ${dataFriend['lastName']}",
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        Text(
+                          "${dataFriend['userName']}",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey[500],
+                          ),
+                          textAlign: TextAlign.left,
                         ),
                       ],
                     ),
+                    leading: Icon(Icons.account_circle_rounded,
+                        size: 50.0, color: Colors.pink),
                   ),
                   Divider(
                     height: 30,
@@ -350,68 +343,54 @@ class _ProfilePageState extends State<ProfilePage>
             list.add(
               Column(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                  ListTile(
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.account_circle_rounded,
-                            size: 50.0, color: Colors.pink),
-                        Padding(padding: EdgeInsets.only(right: 10)),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${dataFriend['firstName']} ${dataFriend['lastName']}",
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              "${dataFriend['userName']}",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey[500],
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ],
-                        ),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  //makes sure user passed is passed to accept friend
-                                  context
-                                      .read<UserProvider>()
-                                      .changeSelectedUser(
-                                          UserData.fromJson(dataFriend));
-                                  //calls accept friend
-                                  context.read<UserProvider>().acceptFriend();
-                                },
-                                icon: Icon(Icons.check_circle,
-                                    color: Colors.grey[500]),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  //makes sure user passed is passed to decline friend
-                                  context
-                                      .read<UserProvider>()
-                                      .changeSelectedUser(
-                                          UserData.fromJson(dataFriend));
-                                  //calls decline friend
-                                  context.read<UserProvider>().declineFriend();
-                                },
-                                icon: Icon(Icons.remove_circle,
-                                    color: Colors.grey[500]),
-                              ),
-                            ],
+                        Text(
+                          "${dataFriend['firstName']} ${dataFriend['lastName']}",
+                          style: TextStyle(
+                            fontSize: 18,
                           ),
+                          textAlign: TextAlign.left,
                         ),
-                        Padding(padding: EdgeInsets.only(right: 20)),
+                        Text(
+                          "${dataFriend['userName']}",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey[500],
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    ),
+                    leading: Icon(Icons.account_circle_rounded,
+                        size: 50.0, color: Colors.pink),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            //makes sure user passed is passed to accept friend
+                            context.read<UserProvider>().changeSelectedUser(
+                                UserData.fromJson(dataFriend));
+                            //calls accept friend
+                            context.read<UserProvider>().acceptFriend();
+                          },
+                          icon:
+                              Icon(Icons.check_circle, color: Colors.grey[500]),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            //makes sure user passed is passed to decline friend
+                            context.read<UserProvider>().changeSelectedUser(
+                                UserData.fromJson(dataFriend));
+                            //calls decline friend
+                            context.read<UserProvider>().declineFriend();
+                          },
+                          icon: Icon(Icons.remove_circle,
+                              color: Colors.grey[500]),
+                        ),
                       ],
                     ),
                   ),
@@ -444,16 +423,17 @@ class _ProfilePageState extends State<ProfilePage>
           Padding(padding: EdgeInsets.only(top: 10)),
           Column(children: list),
           Padding(padding: EdgeInsets.only(top: 20)),
-          Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: Text(
-              "Friends",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Color.fromARGB(255, 115, 112, 112)),
+          if (context.read<UserProvider>().selected.friends!.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: Text(
+                "Friends",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Color.fromARGB(255, 115, 112, 112)),
+              ),
             ),
-          ),
           Padding(padding: EdgeInsets.only(top: 10)),
         ],
       );
