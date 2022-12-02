@@ -51,7 +51,7 @@ class FirebaseTodoAPI {
 
   Future<String> checkTodo(String? id, bool status) async {
     try {
-      await db.collection("todos").doc(id).update({"completed": status});
+      await db.collection("todos").doc(id).update({"status": status});
 
       return "Successfully edited todo!";
     } on FirebaseException catch (e) {

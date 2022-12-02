@@ -27,14 +27,6 @@ class FirebaseAuthAPI {
     try {
       final credential = await auth.signInWithEmailAndPassword(
           email: email, password: password);
-
-      auth.authStateChanges().listen((User? user) {
-        if (user == null) {
-          print("Not signed in");
-        } else {
-          Me.myId = user.uid;
-        }
-      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         //possible to return something more useful
@@ -67,16 +59,6 @@ class FirebaseAuthAPI {
       if (credential.user != null) {
         saveUserToFirestore(credential.user?.uid, email, firstName, lastName,
             userName, day, month, year, location);
-
-        auth.authStateChanges().listen(
-          (User? user) {
-            if (user == null) {
-              print("Not signed in");
-            } else {
-              Me.myId = user.uid;
-            }
-          },
-        );
       }
     } on FirebaseAuthException catch (e) {
       //possible to return something more useful
@@ -116,7 +98,7 @@ class FirebaseAuthAPI {
         "userName": userName,
         "birthday": {'day': day, 'month': month, 'year': year},
         "location": location,
-        "bio": "",
+        "bio": "Click the pencil on the upper right to edit your bio!",
         "friends": [],
         "receivedFriendRequests": [],
         "sentFriendRequests": [],

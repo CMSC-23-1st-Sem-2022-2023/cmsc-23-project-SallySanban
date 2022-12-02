@@ -29,6 +29,12 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void editBio(String bio) async {
+    String message = await firebaseService.editBio(Me.myId, bio);
+    print(message);
+    notifyListeners();
+  }
+
   //calls firebase's send friend request
   void sendFriendRequest() async {
     String message =

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project_teknomo/api/firebase_auth_api.dart';
+import 'package:project_teknomo/me.dart';
 
 class AuthProvider with ChangeNotifier {
   late FirebaseAuthAPI authService;
@@ -10,6 +11,13 @@ class AuthProvider with ChangeNotifier {
     authService = FirebaseAuthAPI();
     authService.getUser().listen((User? newUser) {
       userObj = newUser;
+
+      if (newUser == null) {
+        print("Not signed in");
+      } else {
+        Me.myId = Me.myId = newUser.uid;
+      }
+
       print('AuthProvider - FirebaseAuth - onAuthStateChanged - $newUser');
       notifyListeners();
     }, onError: (e) {

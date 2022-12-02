@@ -231,56 +231,56 @@ class _SignupPageState extends State<SignupPage> {
     );
 
     final SignupButton = Padding(
-      key: const Key('signupButtonSignupPage'),
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Colors.pink),
-        onPressed: () async {
-          if (_formKeySignUp.currentState!.validate()) {
-            _formKeySignUp.currentState?.save();
+        key: const Key('signupButtonSignupPage'),
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.pink),
+          onPressed: () async {
+            if (_formKeySignUp.currentState!.validate()) {
+              _formKeySignUp.currentState?.save();
 
-            String? errorMessage = await context.read<AuthProvider>().signUp(
-                emailSignupController.text,
-                passwordSignupController.text,
-                firstNameController.text,
-                lastNameController.text,
-                userNameController.text,
-                dayController.text,
-                monthController.text,
-                yearController.text,
-                locationController.text);
+              String? errorMessage = await context.read<AuthProvider>().signUp(
+                  emailSignupController.text,
+                  passwordSignupController.text,
+                  firstNameController.text,
+                  lastNameController.text,
+                  userNameController.text,
+                  dayController.text,
+                  monthController.text,
+                  yearController.text,
+                  locationController.text);
 
-            if (errorMessage != null) {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    key: const Key('errorDialog'),
-                    content: Text(
-                      "${errorMessage}",
-                      textAlign: TextAlign.center,
-                    ),
-                    actions: [
-                      Center(
-                        child: TextButton(
-                          child: Text("OK"),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
+              if (errorMessage != null) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      key: const Key('errorDialog'),
+                      content: Text(
+                        "${errorMessage}",
+                        textAlign: TextAlign.center,
                       ),
-                    ],
-                  );
-                },
-              );
-            } else {
-              Navigator.pop(context);
+                      actions: [
+                        Center(
+                          child: TextButton(
+                            child: Text("OK"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             }
-          }
-        },
-        child: const Text('Sign up', style: TextStyle(color: Colors.white)),
-      ),
-    );
+          },
+          // } else {
+          //   Navigator.pop(context);
+          // }
+          child: const Text('Sign up', style: TextStyle(color: Colors.white)),
+        ));
 
     final loginButton = Padding(
       key: const Key('loginButtonLoginPage'),

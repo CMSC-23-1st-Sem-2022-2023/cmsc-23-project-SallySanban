@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:project_teknomo/models/todo_model.dart';
 import 'package:project_teknomo/providers/todo_provider.dart';
+import 'package:project_teknomo/providers/user_provider.dart';
 
-class TodoDialog extends StatelessWidget {
+class PopUp extends StatelessWidget {
   String type;
   // int todoIndex;
   TextEditingController titleController = TextEditingController();
@@ -11,8 +12,9 @@ class TodoDialog extends StatelessWidget {
   TextEditingController dayController = TextEditingController();
   TextEditingController monthController = TextEditingController();
   TextEditingController yearController = TextEditingController();
+  TextEditingController bioController = TextEditingController();
 
-  TodoDialog({
+  PopUp({
     super.key,
     required this.type,
   });
@@ -26,6 +28,10 @@ class TodoDialog extends StatelessWidget {
         return const Text("Edit task");
       case 'Delete':
         return const Text("Delete task");
+      case 'Bio':
+        return const Text("Edit bio");
+      case 'Error':
+        return const Text("Error");
       default:
         return const Text("");
     }
@@ -41,6 +47,31 @@ class TodoDialog extends StatelessWidget {
         {
           return Text(
             "Are you sure you want to delete '${context.read<TodoListProvider>().selected.title}'?",
+          );
+        }
+      case 'Bio':
+        {
+          return Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: TextField(
+                    controller: bioController,
+                    decoration: InputDecoration(
+                      hintText: "Bio",
+                    ),
+                    keyboardType: TextInputType.multiline,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      case 'Error':
+        {
+          return Text(
+            "You cannot change the status of this task!",
           );
         }
       // Edit and add will have input field in them
@@ -149,12 +180,25 @@ class TodoDialog extends StatelessWidget {
               Navigator.of(context).pop();
               break;
             }
+          case 'Bio':
+            {
+              context.read<UserProvider>().editBio(bioController.text);
+
+              // Remove dialog after editing
+              Navigator.of(context).pop();
+              break;
+            }
+          default:
+            {
+              Navigator.of(context).pop();
+              break;
+            }
         }
       },
       style: TextButton.styleFrom(
         textStyle: Theme.of(context).textTheme.labelLarge,
       ),
-      child: Text(type),
+      child: Text("OK"),
     );
   }
 

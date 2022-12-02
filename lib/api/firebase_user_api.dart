@@ -73,6 +73,16 @@ class FirebaseTodoAPI {
     }
   }
 
+  Future<String> editBio(String? id, String bio) async {
+    try {
+      await db.collection("users").doc(id).update({"bio": bio});
+
+      return "Successfully edited bio!";
+    } on FirebaseException catch (e) {
+      return "Failed with error '${e.code}: ${e.message}";
+    }
+  }
+
   //gets all users
   Stream<QuerySnapshot> getAllUsers() {
     return db.collection("users").snapshots();

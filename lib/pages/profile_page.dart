@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:project_teknomo/models/user_model.dart';
 import 'package:project_teknomo/models/todo_model.dart';
-import 'package:project_teknomo/pages/todo_dialog.dart';
+import 'package:project_teknomo/pages/pop_up.dart';
 import 'package:project_teknomo/providers/user_provider.dart';
 import 'package:project_teknomo/providers/todo_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,63 +17,201 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    TabController tabController = TabController(length: 2, vsync: this);
+
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(
-            "${context.read<UserProvider>().selected.firstName} ${context.read<UserProvider>().selected.lastName}'s Profile"),
+        elevation: 0,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Color.fromARGB(255, 115, 112, 112),
+              ),
+              onPressed: () => Navigator.pop(context),
+            );
+          },
+        ),
+        actions: [
+          if (context.read<UserProvider>().selected.id == Me.myId)
+            IconButton(
+              icon: Icon(Icons.create_outlined,
+                  color: Color.fromARGB(255, 115, 112, 112)),
+              onPressed: () {
+                context
+                    .read<UserProvider>()
+                    .changeSelectedUser(context.read<UserProvider>().selected);
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => PopUp(
+                    type: 'Bio',
+                  ),
+                );
+              },
+            ),
+        ],
+        backgroundColor: Colors.white,
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-          ),
-          Icon(Icons.account_circle_rounded, size: 80.0),
-          Text(
-            "${context.read<UserProvider>().selected.firstName} ${context.read<UserProvider>().selected.lastName}",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 30,
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.account_circle_rounded,
+                  size: 120.0,
+                  color: Colors.pink,
+                ),
+                Padding(padding: EdgeInsets.only(top: 10)),
+                Text(
+                  "${context.read<UserProvider>().selected.firstName} ${context.read<UserProvider>().selected.lastName}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                Text(
+                  "${context.read<UserProvider>().selected.userName}",
+                  style: TextStyle(
+                    color: Colors.grey[500],
+                    fontSize: 15,
+                  ),
+                ),
+                Text(
+                  "${context.read<UserProvider>().selected.id}",
+                  style: TextStyle(
+                    color: Colors.grey[500],
+                    fontSize: 15,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: Text(
+                    "${context.read<UserProvider>().selected.bio}",
+                    style: TextStyle(
+                      color: Colors.grey[500],
+                      fontSize: 15,
+                    ),
+                    textAlign: TextAlign.justify,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.only(top: 30)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          "LOCATION",
+                          style: TextStyle(
+                            color: Colors.pink,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "${context.read<UserProvider>().selected.location}",
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          "BIRTHDAY",
+                          style: TextStyle(
+                            color: Colors.pink,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "${context.read<UserProvider>().selected.birthday['day']}/${context.read<UserProvider>().selected.birthday['month']}/${context.read<UserProvider>().selected.birthday['year']}",
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.only(top: 30)),
+              ],
             ),
           ),
-          Text(
-            "${context.read<UserProvider>().selected.userName}",
-            style: TextStyle(
-              color: Colors.grey[500],
-              fontSize: 15,
+          Padding(padding: EdgeInsets.only(top: 10)),
+          DefaultTabController(
+            initialIndex: 0,
+            length: 2,
+            child: TabBar(
+              controller: tabController,
+              tabs: <Widget>[
+                Tab(
+                  text: "Friends",
+                ),
+                Tab(
+                  text: "To Do List",
+                ),
+              ],
+              indicatorColor: Colors.pink,
+              labelColor: Colors.black,
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-          ),
-          Divider(
-            height: 20,
-            thickness: 1,
-            indent: 10,
-            endIndent: 10,
-            color: Colors.grey[500],
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-          ),
-          Text(
-            "Friends",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
+          Padding(padding: EdgeInsets.only(top: 20)),
+          Expanded(
+            child: TabBarView(
+              controller: tabController,
+              children: <Widget>[
+                friendsTab(),
+                todoTab(),
+              ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-          ),
-          //accesses list of friends of the user passed
+        ],
+      ),
+      floatingActionButton: floatingActionButton(),
+    );
+  }
+
+  Widget friendsTab() {
+    return ListView(
+      children: [
+        if (context.read<UserProvider>().selected.id == Me.myId &&
+            context
+                .read<UserProvider>()
+                .selected
+                .receivedFriendRequests!
+                .isNotEmpty)
           FutureBuilder(
-            future: loopThroughFriends(
-                context.read<UserProvider>().selected.friends),
+            future: loopThroughReceivedRequests(
+                context.read<UserProvider>().selected.receivedFriendRequests),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if (!snapshot.hasData) {
                 return Text("");
@@ -82,102 +220,26 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             },
           ),
-          if (context.read<UserProvider>().selected.id == Me.myId)
-            Divider(
-              height: 20,
-              thickness: 1,
-              indent: 10,
-              endIndent: 10,
-              color: Colors.grey[500],
-            ),
-          if (context.read<UserProvider>().selected.id == Me.myId)
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-            ),
-          if (context.read<UserProvider>().selected.id == Me.myId)
-            Text(
-              "Pending Friend Requests",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          if (context.read<UserProvider>().selected.id == Me.myId)
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-            ),
-          //accesses list of received friend requests of the user passed
-          if (context.read<UserProvider>().selected.id == Me.myId)
-            FutureBuilder(
-              future: loopThroughReceivedRequests(
-                context.read<UserProvider>().selected.receivedFriendRequests,
-              ),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (!snapshot.hasData) {
-                  return Text("");
-                } else {
-                  return snapshot.data!;
-                }
-              },
-            ),
-          if (context.read<UserProvider>().selected.id == Me.myId)
-            Divider(
-              height: 20,
-              thickness: 1,
-              indent: 10,
-              endIndent: 10,
-              color: Colors.grey[500],
-            ),
-          if (context.read<UserProvider>().selected.id == Me.myId)
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-            ),
-          if (context.read<UserProvider>().selected.id == Me.myId)
-            Text(
-              "Sent Friend Requests",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          if (context.read<UserProvider>().selected.id == Me.myId)
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-            ),
-          //accesses list of sent friend requests of the user passed
-          if (context.read<UserProvider>().selected.id == Me.myId)
-            FutureBuilder(
-              future: loopThroughSentRequests(
-                context.read<UserProvider>().selected.sentFriendRequests,
-              ),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (!snapshot.hasData) {
-                  return Text("");
-                } else {
-                  return snapshot.data!;
-                }
-              },
-            ),
-          Divider(
-            height: 20,
-            thickness: 1,
-            indent: 10,
-            endIndent: 10,
-            color: Colors.grey[500],
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-          ),
-          Text(
-            "Todos",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-          ),
+        FutureBuilder(
+          future:
+              loopThroughFriends(context.read<UserProvider>().selected.friends),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (!snapshot.hasData) {
+              return Text("");
+            } else {
+              return snapshot.data!;
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget todoTab() {
+    return ListView(
+      children: [
+        if (context.read<UserProvider>().selected.friends!.contains(Me.myId) ||
+            context.read<UserProvider>().selected.id == Me.myId)
           FutureBuilder(
             future: loopThroughTodos(
               context.read<UserProvider>().selected.todos,
@@ -190,9 +252,19 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             },
           ),
-        ],
-      ),
-      floatingActionButton: floatingActionButton(),
+        if (!(context
+                .read<UserProvider>()
+                .selected
+                .friends!
+                .contains(Me.myId)) &&
+            !(context.read<UserProvider>().selected.id == Me.myId))
+          SizedBox(
+            height: 280,
+            child: Center(
+              child: Text("Please add me as a friend to see my to do list!"),
+            ),
+          )
+      ],
     );
   }
 
@@ -206,21 +278,56 @@ class _ProfilePageState extends State<ProfilePage> {
       for (var i = 0; i < friends.length; i++) {
         final docRefFriend =
             FirebaseTodoAPI.db.collection("users").doc(friends[i]);
-        await docRefFriend.get().then((DocumentSnapshot doc) async {
-          final dataFriend = doc.data() as Map<String, dynamic>;
+        await docRefFriend.get().then(
+          (DocumentSnapshot doc) async {
+            final dataFriend = doc.data() as Map<String, dynamic>;
 
-          list.add(Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text(
-              "${dataFriend['firstName']} ${dataFriend['lastName']}",
-              style: TextStyle(
-                fontSize: 18,
+            list.add(
+              Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.account_circle_rounded,
+                            size: 50.0, color: Colors.pink),
+                        Padding(padding: EdgeInsets.only(right: 10)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${dataFriend['firstName']} ${dataFriend['lastName']}",
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                            Text(
+                              "${dataFriend['userName']}",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey[500],
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    height: 30,
+                    thickness: 0.5,
+                    indent: 20,
+                    endIndent: 30,
+                    color: Color.fromARGB(255, 200, 200, 200),
+                  ),
+                ],
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 5, right: 5),
-            ),
-          ]));
-        });
+            );
+          },
+        );
       }
       return Column(children: list);
     }
@@ -241,39 +348,79 @@ class _ProfilePageState extends State<ProfilePage> {
             final dataFriend = doc.data() as Map<String, dynamic>;
 
             list.add(
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Column(
                 children: [
-                  Text(
-                    "${dataFriend['firstName']} ${dataFriend['lastName']}",
-                    style: TextStyle(
-                      fontSize: 18,
+                  Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.account_circle_rounded,
+                            size: 50.0, color: Colors.pink),
+                        Padding(padding: EdgeInsets.only(right: 10)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${dataFriend['firstName']} ${dataFriend['lastName']}",
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                            Text(
+                              "${dataFriend['userName']}",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey[500],
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  //makes sure user passed is passed to accept friend
+                                  context
+                                      .read<UserProvider>()
+                                      .changeSelectedUser(
+                                          UserData.fromJson(dataFriend));
+                                  //calls accept friend
+                                  context.read<UserProvider>().acceptFriend();
+                                },
+                                icon: Icon(Icons.check_circle,
+                                    color: Colors.grey[500]),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  //makes sure user passed is passed to decline friend
+                                  context
+                                      .read<UserProvider>()
+                                      .changeSelectedUser(
+                                          UserData.fromJson(dataFriend));
+                                  //calls decline friend
+                                  context.read<UserProvider>().declineFriend();
+                                },
+                                icon: Icon(Icons.remove_circle,
+                                    color: Colors.grey[500]),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(padding: EdgeInsets.only(right: 20)),
+                      ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 5, right: 5),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      //makes sure user passed is passed to accept friend
-                      context
-                          .read<UserProvider>()
-                          .changeSelectedUser(UserData.fromJson(dataFriend));
-                      //calls accept friend
-                      context.read<UserProvider>().acceptFriend();
-                    },
-                    icon: Icon(Icons.check_circle),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      //makes sure user passed is passed to decline friend
-                      context
-                          .read<UserProvider>()
-                          .changeSelectedUser(UserData.fromJson(dataFriend));
-                      //calls decline friend
-                      context.read<UserProvider>().declineFriend();
-                    },
-                    icon: Icon(Icons.remove_circle),
+                  Divider(
+                    height: 30,
+                    thickness: 0.5,
+                    indent: 20,
+                    endIndent: 30,
+                    color: Color.fromARGB(255, 200, 200, 200),
                   ),
                 ],
               ),
@@ -281,36 +428,35 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         );
       }
-      return Column(children: list);
-    }
-  }
-
-  //loops through sent friend requests
-  Future<Widget> loopThroughSentRequests(List? friendRequests) async {
-    List<Widget> list = [];
-
-    if (friendRequests == null) {
-      return Text("");
-    } else {
-      for (var i = 0; i < friendRequests.length; i++) {
-        final docRefFriend =
-            FirebaseTodoAPI.db.collection("users").doc(friendRequests[i]);
-        await docRefFriend.get().then(
-          (DocumentSnapshot doc) async {
-            final dataFriend = doc.data() as Map<String, dynamic>;
-
-            list.add(
-              Text(
-                "${dataFriend['firstName']} ${dataFriend['lastName']}",
-                style: TextStyle(
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 20),
+            child: Text(
+              "Pending Friend Requests",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
                   fontSize: 18,
-                ),
-              ),
-            );
-          },
-        );
-      }
-      return Column(children: list);
+                  color: Color.fromARGB(255, 115, 112, 112)),
+            ),
+          ),
+          Padding(padding: EdgeInsets.only(top: 10)),
+          Column(children: list),
+          Padding(padding: EdgeInsets.only(top: 20)),
+          Padding(
+            padding: EdgeInsets.only(left: 20),
+            child: Text(
+              "Friends",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Color.fromARGB(255, 115, 112, 112)),
+            ),
+          ),
+          Padding(padding: EdgeInsets.only(top: 10)),
+        ],
+      );
     }
   }
 
@@ -333,10 +479,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 leading: Checkbox(
                   value: dataTodo['status'],
                   onChanged: (bool? value) {
-                    context
-                        .read<TodoListProvider>()
-                        .changeSelectedTodo(Todo.fromJson(dataTodo));
-                    context.read<TodoListProvider>().toggleStatus(value!);
+                    if (context.read<UserProvider>().selected.id == Me.myId)
+                      context
+                          .read<TodoListProvider>()
+                          .changeSelectedTodo(Todo.fromJson(dataTodo));
+                    if (context.read<UserProvider>().selected.id == Me.myId)
+                      context.read<TodoListProvider>().toggleStatus(value!);
+                    if (context.read<UserProvider>().selected.id != Me.myId)
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => PopUp(
+                          type: 'Error',
+                        ),
+                      );
                   },
                 ),
                 trailing: Row(
@@ -349,27 +504,28 @@ class _ProfilePageState extends State<ProfilePage> {
                             .changeSelectedTodo(Todo.fromJson(dataTodo));
                         showDialog(
                           context: context,
-                          builder: (BuildContext context) => TodoDialog(
+                          builder: (BuildContext context) => PopUp(
                             type: 'Edit',
                           ),
                         );
                       },
                       icon: const Icon(Icons.create_outlined),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        context
-                            .read<TodoListProvider>()
-                            .changeSelectedTodo(Todo.fromJson(dataTodo));
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) => TodoDialog(
-                            type: 'Delete',
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.delete_outlined),
-                    )
+                    if (context.read<UserProvider>().selected.id == Me.myId)
+                      IconButton(
+                        onPressed: () {
+                          context
+                              .read<TodoListProvider>()
+                              .changeSelectedTodo(Todo.fromJson(dataTodo));
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) => PopUp(
+                              type: 'Delete',
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.delete_outlined),
+                      )
                   ],
                 ),
               ),
@@ -384,10 +540,11 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget floatingActionButton() {
     if (context.read<UserProvider>().selected.id == Me.myId) {
       return FloatingActionButton(
+        backgroundColor: Colors.pink,
         onPressed: () {
           showDialog(
             context: context,
-            builder: (BuildContext context) => TodoDialog(
+            builder: (BuildContext context) => PopUp(
               type: 'Add',
             ),
           );

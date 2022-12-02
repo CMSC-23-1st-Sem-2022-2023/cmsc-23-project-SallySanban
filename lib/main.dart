@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:project_teknomo/pages/friends_page.dart';
 import 'package:provider/provider.dart';
 import 'package:project_teknomo/providers/user_provider.dart';
+import 'package:project_teknomo/providers/todo_provider.dart';
 import 'package:project_teknomo/providers/auth_provider.dart';
-import 'package:project_teknomo/pages/todo_page.dart';
-import 'package:project_teknomo/pages/login.dart';
 import 'package:project_teknomo/pages/signup_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -21,6 +20,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: ((context) => UserProvider())),
+        ChangeNotifierProvider(create: ((context) => TodoListProvider())),
         ChangeNotifierProvider(create: ((context) => AuthProvider())),
       ],
       child: MyApp(),

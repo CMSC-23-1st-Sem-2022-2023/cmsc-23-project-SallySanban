@@ -16,6 +16,7 @@ class FriendsPage extends StatefulWidget {
 
 class _FriendsPageState extends State<FriendsPage> {
   TextEditingController searchController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +25,8 @@ class _FriendsPageState extends State<FriendsPage> {
     List<DocumentSnapshot> documents = [];
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      key: _scaffoldKey,
       drawer: Drawer(
         child: SafeArea(
           child: ListView(
@@ -41,7 +44,19 @@ class _FriendsPageState extends State<FriendsPage> {
         ),
       ),
       appBar: AppBar(
-        title: Text('App Bar!'),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(
+                Icons.menu,
+                color: Color.fromARGB(255, 115, 112, 112),
+              ),
+              onPressed: () => _scaffoldKey.currentState!.openDrawer(),
+            );
+          },
+        ),
+        title: Text('Users',
+            style: TextStyle(color: Color.fromARGB(255, 115, 112, 112))),
         flexibleSpace: SafeArea(
           child: Image(
             image: AssetImage('images/theme.png'),
@@ -56,7 +71,7 @@ class _FriendsPageState extends State<FriendsPage> {
             children: [
               Padding(padding: EdgeInsets.only(top: 5, bottom: 5)),
               Container(
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.all(15),
                 //search bar [1]
                 child: TextField(
                   controller: searchController,
@@ -76,7 +91,6 @@ class _FriendsPageState extends State<FriendsPage> {
                 ),
               ),
               Padding(padding: EdgeInsets.only(top: 5, bottom: 5)),
-              //gets the documents (the users) from
               StreamBuilder(
                 stream: usersStream,
                 builder: (context, snapshot) {
@@ -97,6 +111,10 @@ class _FriendsPageState extends State<FriendsPage> {
 
                   //all the users
                   documents = snapshot.data!.docs;
+
+                  for (int i = 0; i < documents.length; i++) {
+                    print(snapshot.data!.docs[i].toString());
+                  }
 
                   //filters the users depending on what was searched [5] [6]
                   if (searchController.text.length > 0) {
@@ -131,6 +149,7 @@ class _FriendsPageState extends State<FriendsPage> {
                       //initializes to 0 for every user
                       int checkIfFriend = 0; //0 if not in friends list
                       int checkIfRequestSent = 0; //0 if not requested
+                      int checkIfRequestReceived = 0;
                       //checks if user is already your friend or you have already sent a friend request to this user
                       //whether the add friend/unfriend button appears depends on this
                       for (var i = 0; i < self.friends!.length; i++) {
@@ -147,16 +166,50 @@ class _FriendsPageState extends State<FriendsPage> {
                         }
                       }
 
+                      for (var i = 0;
+                          i < self.receivedFriendRequests!.length;
+                          i++) {
+                        if (self.receivedFriendRequests![i] == friend.id) {
+                          checkIfRequestReceived = 1;
+                        }
+                      }
+
+                      // print(friend.userName);
+                      // print(checkIfFriend);
+                      // print(checkIfRequestSent);
+
+                      // if (friend.id == Me.myId) {
+                      //   print("YES");
+                      // } else {
+                      //   print(Me.myId);
+                      // }
+
                       return ListTile(
-                        title: Text(friend.userName),
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${friend.firstName} ${friend.lastName}",
+                              textAlign: TextAlign.left,
+                            ),
+                            Text(
+                              "${friend.userName}",
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
                         leading: const Icon(Icons.account_circle_rounded,
-                            size: 50.0),
+                            size: 50.0, color: Colors.pink),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             //shows add friend only if not friend yet, havent sent friend req yet, not you [4]
                             if (checkIfFriend == 0 &&
                                 checkIfRequestSent == 0 &&
+                                checkIfRequestReceived == 0 &&
                                 friend.id != self.id)
                               IconButton(
                                 onPressed: () {
@@ -168,7 +221,8 @@ class _FriendsPageState extends State<FriendsPage> {
                                       .read<UserProvider>()
                                       .sendFriendRequest();
                                 },
-                                icon: const Icon(Icons.add_circle),
+                                icon: Icon(Icons.add_circle,
+                                    color: Colors.grey[500]),
                               ),
                             //shows unfriend only if already friend, not you [4]
                             if (checkIfFriend == 1 && friend.id != self.id)
@@ -182,7 +236,8 @@ class _FriendsPageState extends State<FriendsPage> {
                                       .read<UserProvider>()
                                       .unfriend(); //calls unfriend
                                 },
-                                icon: const Icon(Icons.remove_circle),
+                                icon: Icon(Icons.remove_circle,
+                                    color: Colors.grey[500]),
                               ),
                           ],
                         ),
