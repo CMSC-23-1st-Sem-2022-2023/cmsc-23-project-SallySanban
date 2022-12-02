@@ -385,19 +385,21 @@ class _ProfilePageState extends State<ProfilePage>
           (DocumentSnapshot doc) async {
             final dataFriend = doc.data() as Map<String, dynamic>;
 
+            UserData friend = UserData.fromJson(dataFriend);
+
             list.add(
               Column(
                 children: [
                   ListTile(
                     title: Text(
-                      "${dataFriend['firstName']} ${dataFriend['lastName']}",
+                      "${friend.firstName} ${friend.lastName}",
                       style: TextStyle(
                         fontSize: 18,
                       ),
                       textAlign: TextAlign.left,
                     ),
                     subtitle: Text(
-                      "${dataFriend['userName']}",
+                      "${friend.userName}",
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.grey[500],
@@ -406,6 +408,12 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                     leading: Icon(Icons.account_circle_rounded,
                         size: 50.0, color: Colors.pink),
+                    onTap: () {
+                      context //makes sure friend user is passed when switching pages
+                          .read<UserProvider>()
+                          .changeSelectedUser(friend);
+                      Navigator.pushNamed(context, '/profile');
+                    },
                   ),
                   Divider(
                     height: 30,
@@ -438,6 +446,8 @@ class _ProfilePageState extends State<ProfilePage>
           (DocumentSnapshot doc) async {
             final dataFriend = doc.data() as Map<String, dynamic>;
 
+            UserData friend = UserData.fromJson(dataFriend);
+
             list.add(
               Padding(
                 padding: EdgeInsets.only(left: 10, right: 10),
@@ -450,14 +460,14 @@ class _ProfilePageState extends State<ProfilePage>
                     children: [
                       ListTile(
                         title: Text(
-                          "${dataFriend['firstName']} ${dataFriend['lastName']}",
+                          "${friend.firstName} ${friend.lastName}",
                           style: TextStyle(
                             fontSize: 18,
                           ),
                           textAlign: TextAlign.left,
                         ),
                         subtitle: Text(
-                          "${dataFriend['userName']}",
+                          "${friend.userName}",
                           style: TextStyle(
                             fontSize: 15,
                             color: Colors.grey[500],
@@ -472,8 +482,9 @@ class _ProfilePageState extends State<ProfilePage>
                             IconButton(
                               onPressed: () {
                                 //makes sure user passed is passed to accept friend
-                                context.read<UserProvider>().changeSelectedUser(
-                                    UserData.fromJson(dataFriend));
+                                context
+                                    .read<UserProvider>()
+                                    .changeSelectedUser(friend);
                                 //calls accept friend
                                 context.read<UserProvider>().acceptFriend();
                               },
@@ -483,8 +494,9 @@ class _ProfilePageState extends State<ProfilePage>
                             IconButton(
                               onPressed: () {
                                 //makes sure user passed is passed to decline friend
-                                context.read<UserProvider>().changeSelectedUser(
-                                    UserData.fromJson(dataFriend));
+                                context
+                                    .read<UserProvider>()
+                                    .changeSelectedUser(friend);
                                 //calls decline friend
                                 context.read<UserProvider>().declineFriend();
                               },
@@ -493,6 +505,12 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                           ],
                         ),
+                        onTap: (() {
+                          context //makes sure friend user is passed when switching pages
+                              .read<UserProvider>()
+                              .changeSelectedUser(friend);
+                          Navigator.pushNamed(context, '/profile');
+                        }),
                       ),
                     ],
                   ),
