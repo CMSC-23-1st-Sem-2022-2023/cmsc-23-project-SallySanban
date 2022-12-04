@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_teknomo/models/user_model.dart';
 
 //the following methods edit the database in firebase
-class FirebaseTodoAPI {
+class FirebaseUserAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
   //method for sending friend request (I sent to FRIEND)

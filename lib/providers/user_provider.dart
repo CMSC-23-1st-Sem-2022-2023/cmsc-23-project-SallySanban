@@ -6,12 +6,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 //provider (UI goes through here and this calls methods in firebase API)
 class UserProvider with ChangeNotifier {
-  late FirebaseTodoAPI firebaseService;
+  late FirebaseUserAPI firebaseService;
   late Stream<QuerySnapshot> _usersStream;
   UserData? _selectedUser;
 
   UserProvider() {
-    firebaseService = FirebaseTodoAPI();
+    firebaseService = FirebaseUserAPI();
     fetchUsers();
   }
 
@@ -51,17 +51,15 @@ class UserProvider with ChangeNotifier {
   }
 
   //calls firebase's accept friend
-  void acceptFriend() async {
-    String message =
-        await firebaseService.acceptFriend(_selectedUser!.id, Me.myId);
+  void acceptFriend(String? id) async {
+    String message = await firebaseService.acceptFriend(id, Me.myId);
     print(message);
     notifyListeners();
   }
 
   //calls firebase's decline friend
-  void declineFriend() async {
-    String message =
-        await firebaseService.declineFriend(_selectedUser!.id, Me.myId);
+  void declineFriend(String? id) async {
+    String message = await firebaseService.declineFriend(id, Me.myId);
     print(message);
     notifyListeners();
   }
