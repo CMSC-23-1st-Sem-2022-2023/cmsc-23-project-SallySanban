@@ -4,8 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 //class for user with user information
 class UserData {
   final String? id;
-  final String firstName;
-  final String lastName;
+  final String name;
   final String userName;
   final Map<String, dynamic> birthday;
   final String location;
@@ -19,8 +18,7 @@ class UserData {
   //constructor to initialize user
   UserData({
     this.id,
-    required this.firstName,
-    required this.lastName,
+    required this.name,
     required this.userName,
     required this.birthday,
     required this.location,
@@ -36,8 +34,7 @@ class UserData {
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(
       id: json['id'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
+      name: json['name'],
       userName: json['userName'],
       birthday: json['birthday'],
       location: json['location'],
@@ -60,8 +57,7 @@ class UserData {
   Map<String, dynamic> toJson(UserData user) {
     return {
       'id': user.id,
-      'firstName': user.firstName,
-      'lastName': user.lastName,
+      'name': user.name,
       'userName': user.userName,
       'birthday': user.birthday,
       'location': user.location,

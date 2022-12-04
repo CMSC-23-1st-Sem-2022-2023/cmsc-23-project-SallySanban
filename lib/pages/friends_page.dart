@@ -5,6 +5,7 @@ import 'package:project_teknomo/classes/me.dart';
 import 'package:project_teknomo/providers/user_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_teknomo/providers/auth_provider.dart';
+import 'package:project_teknomo/pages/search_page.dart';
 
 //page for friends list
 class FriendsPage extends StatefulWidget {
@@ -66,38 +67,17 @@ class _FriendsPageState extends State<FriendsPage> {
           IconButton(
               icon:
                   Icon(Icons.search, color: Color.fromARGB(255, 115, 112, 112)),
-              onPressed: () async {})
+              onPressed: () async {
+                showSearch(
+                  context: context,
+                  delegate: MySearchDelegate(),
+                );
+              })
         ],
         backgroundColor: Colors.transparent,
       ),
       body: Column(
         children: [
-          // ],ListView(
-          //   children: [
-          //     Column(
-          //       children: [
-          // Padding(padding: EdgeInsets.only(top: 5, bottom: 5)),
-          // Container(
-          //   padding: EdgeInsets.all(15),
-          //   //search bar [1]
-          //   child: TextField(
-          //     controller: searchController,
-          //     decoration: InputDecoration(
-          //       labelText: "Search",
-          //       hintText: "Search",
-          //       prefixIcon: Icon(Icons.search),
-          //       border: OutlineInputBorder(
-          //         borderRadius: BorderRadius.all(
-          //           Radius.circular(25.0),
-          //         ),
-          //       ),
-          //     ),
-          //     onChanged: (value) => setState(() {
-          //       value = searchController.text;
-          //     }),
-          //   ),
-          // ),
-          //Padding(padding: EdgeInsets.only(top: 5, bottom: 5)),
           StreamBuilder(
             stream: usersStream,
             builder: (context, snapshot) {
@@ -263,15 +243,6 @@ class _FriendsPageState extends State<FriendsPage> {
                         }
                       }
 
-                      // print(friend.userName);
-                      // print(checkIfFriend);
-                      // print(checkIfRequestSent);
-
-                      // if (friend.id == Me.myId) {
-                      //   print("YES");
-                      // } else {
-                      //   print(Me.myId);
-                      // }
                       if (friend.id != Me.myId)
                         return Padding(
                           padding: EdgeInsets.only(bottom: 10),
@@ -280,7 +251,7 @@ class _FriendsPageState extends State<FriendsPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "${friend.firstName} ${friend.lastName}",
+                                  "${friend.name}",
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(

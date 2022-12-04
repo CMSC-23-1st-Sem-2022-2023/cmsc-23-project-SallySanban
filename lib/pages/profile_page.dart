@@ -176,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
                 Padding(padding: EdgeInsets.only(top: 10)),
                 Text(
-                  "${context.read<UserProvider>().selected.firstName} ${context.read<UserProvider>().selected.lastName}",
+                  "${context.read<UserProvider>().selected.name}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -213,7 +213,7 @@ class _ProfilePageState extends State<ProfilePage>
                         );
                       } else if (!snapshot.hasData) {
                         return Center(
-                          child: Text("No Tasks Found"),
+                          child: Text("No Users Found"),
                         );
                       }
 
@@ -392,7 +392,7 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                           ListTile(
                             title: Text(
-                              "${friend.firstName} ${friend.lastName}",
+                              "${friend.name}",
                               style: TextStyle(
                                 fontSize: 18,
                               ),
@@ -492,7 +492,7 @@ class _ProfilePageState extends State<ProfilePage>
                     context.read<UserProvider>().selected.id == Me.myId)
                   return ListTile(
                     title: Text(
-                      "${friend.firstName} ${friend.lastName}",
+                      "${friend.name}",
                       style: TextStyle(
                         fontSize: 18,
                       ),
@@ -523,7 +523,7 @@ class _ProfilePageState extends State<ProfilePage>
                     context.read<UserProvider>().selected.id != Me.myId)
                   return ListTile(
                     title: Text(
-                      "${friend.firstName} ${friend.lastName}",
+                      "${friend.name}",
                       style: TextStyle(
                         fontSize: 18,
                       ),

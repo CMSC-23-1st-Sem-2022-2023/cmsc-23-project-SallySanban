@@ -93,8 +93,7 @@ class FirebaseAuthAPI {
       await db.collection("users").doc(uid).set({
         "id": uid,
         "email": email,
-        "firstName": firstName,
-        "lastName": lastName,
+        "name": firstName + " " + lastName,
         "userName": userName,
         "birthday": {'day': day, 'month': month, 'year': year},
         "location": location,
