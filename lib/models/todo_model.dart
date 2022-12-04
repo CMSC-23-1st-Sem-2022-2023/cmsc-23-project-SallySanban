@@ -9,6 +9,7 @@ class Todo {
   bool notifications;
   String lastEditedBy;
   String lastEdited;
+  String owner;
 
   Todo({
     this.id,
@@ -19,6 +20,7 @@ class Todo {
     required this.notifications,
     required this.lastEditedBy,
     required this.lastEdited,
+    required this.owner,
   });
 
   // Factory constructor to instantiate object from json format
@@ -32,6 +34,7 @@ class Todo {
       notifications: json['notifications'],
       lastEditedBy: json['lastEditedBy'],
       lastEdited: json['lastEdited'],
+      owner: json['owner'],
     );
   }
 
@@ -50,6 +53,7 @@ class Todo {
       'notifications': todo.notifications,
       'lastEditedBy': todo.lastEditedBy,
       'lastEdited': todo.lastEdited,
+      'owner': todo.owner,
     };
   }
 }

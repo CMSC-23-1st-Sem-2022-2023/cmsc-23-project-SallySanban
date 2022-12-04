@@ -41,6 +41,7 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context) {
     TabController tabController = TabController(length: 2, vsync: this);
+    //Stream<QuerySnapshot> todosStream = context.watch<TodoListProvider>().todos;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -288,6 +289,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget friendsTab() {
+    List<DocumentSnapshot> friends = [];
     return ListView(
       children: [
         if (context.read<UserProvider>().selected.id == Me.myId &&
@@ -296,27 +298,219 @@ class _ProfilePageState extends State<ProfilePage>
                 .selected
                 .receivedFriendRequests!
                 .isNotEmpty)
-          FutureBuilder(
-            future: loopThroughReceivedRequests(
-                context.read<UserProvider>().selected.receivedFriendRequests),
+          Padding(padding: EdgeInsets.only(top: 10)),
+        if (context.read<UserProvider>().selected.id == Me.myId &&
+            context
+                .read<UserProvider>()
+                .selected
+                .receivedFriendRequests!
+                .isNotEmpty)
+          StreamBuilder(
+            stream: FirebaseTodoAPI.db.collection("users").snapshots(),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if (!snapshot.hasData) {
-                return Text("");
-              } else {
-                return snapshot.data!;
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Error encountered! ${snapshot.error}"),
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (!snapshot.hasData) {
+                return Center(
+                  child: Text("No Friend Requests Found"),
+                );
               }
+
+              friends = snapshot.data!.docs;
+
+              return ListView.builder(
+                reverse: true,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: friends.length,
+                itemBuilder: ((context, index) {
+                  UserData friend = UserData.fromJson(
+                      friends[index].data() as Map<String, dynamic>);
+
+                  UserData self = UserData.fromJson(snapshot.data?.docs
+                      .firstWhere((doc) => doc.id == Me.myId)
+                      .data() as Map<String, dynamic>);
+
+                  if (self.receivedFriendRequests!.contains(friend.id))
+                    return Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                        ),
+                        elevation: 1.0,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 15),
+                            ),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(left: 15),
+                                ),
+                                Text(
+                                  "New Friend Request!",
+                                  style: TextStyle(
+                                    color: Colors.pink,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 10),
+                            ),
+                            ListTile(
+                              title: Text(
+                                "${friend.firstName} ${friend.lastName}",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                              subtitle: Text(
+                                "${friend.userName}",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.grey[500],
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                              leading: Icon(Icons.account_circle_rounded,
+                                  size: 50.0, color: Colors.pink),
+                              onTap: (() {
+                                context //makes sure friend user is passed when switching pages
+                                    .read<UserProvider>()
+                                    .changeSelectedUser(friend);
+                                Navigator.pushNamed(context, '/profile');
+                              }),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  child: Text(
+                                    "ACCEPT",
+                                    style: TextStyle(
+                                        color: Colors.pink,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  onPressed: () {
+                                    //makes sure user passed is passed to accept friend
+                                    context
+                                        .read<UserProvider>()
+                                        .changeSelectedUser(friend);
+                                    //calls accept friend
+                                    context.read<UserProvider>().acceptFriend();
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(
+                                    "DECLINE",
+                                    style: TextStyle(
+                                        color: Colors.pink,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  onPressed: () {
+                                    //makes sure user passed is passed to decline friend
+                                    context
+                                        .read<UserProvider>()
+                                        .changeSelectedUser(friend);
+                                    //calls decline friend
+                                    context
+                                        .read<UserProvider>()
+                                        .declineFriend();
+                                  },
+                                ),
+                                Padding(padding: EdgeInsets.only(right: 15)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  return Container();
+                }),
+              );
             },
           ),
+        Padding(padding: EdgeInsets.only(top: 10)),
         if (context.read<UserProvider>().selected.friends!.isNotEmpty)
-          FutureBuilder(
-            future: loopThroughFriends(
-                context.read<UserProvider>().selected.friends),
+          StreamBuilder(
+            stream: FirebaseTodoAPI.db.collection("users").snapshots(),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if (!snapshot.hasData) {
-                return Text("");
-              } else {
-                return snapshot.data!;
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Error encountered! ${snapshot.error}"),
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (!snapshot.hasData) {
+                return Center(
+                  child: Text("No Friends Found"),
+                );
               }
+
+              friends = snapshot.data!.docs;
+
+              return ListView.builder(
+                reverse: true,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: friends.length,
+                itemBuilder: ((context, index) {
+                  UserData friend = UserData.fromJson(
+                      friends[index].data() as Map<String, dynamic>);
+
+                  UserData self = UserData.fromJson(snapshot.data?.docs
+                      .firstWhere((doc) => doc.id == Me.myId)
+                      .data() as Map<String, dynamic>);
+
+                  if (context
+                      .read<UserProvider>()
+                      .selected
+                      .friends!
+                      .contains(friend.id))
+                    return ListTile(
+                      title: Text(
+                        "${friend.firstName} ${friend.lastName}",
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      subtitle: Text(
+                        "${friend.userName}",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey[500],
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      leading: Icon(Icons.account_circle_rounded,
+                          size: 50.0, color: Colors.pink),
+                      onTap: () {
+                        context //makes sure friend user is passed when switching pages
+                            .read<UserProvider>()
+                            .changeSelectedUser(friend);
+                        Navigator.pushNamed(context, '/profile');
+                      },
+                    );
+                  return Container();
+                }),
+              );
             },
           ),
         if (context.read<UserProvider>().selected.friends!.isEmpty)
@@ -331,21 +525,576 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget todoTab() {
+    List<DocumentSnapshot> tasks = [];
+
     return ListView(
       children: [
         if ((context.read<UserProvider>().selected.friends!.contains(Me.myId) ||
                 context.read<UserProvider>().selected.id == Me.myId) &&
             context.read<UserProvider>().selected.todos!.isNotEmpty)
-          FutureBuilder(
-            future: loopThroughTodos(
-              context.read<UserProvider>().selected.todos,
-            ),
+          StreamBuilder(
+            stream: FirebaseTodoAPI.db.collection("todos").snapshots(),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if (!snapshot.hasData) {
-                return Text("");
-              } else {
-                return snapshot.data!;
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Error encountered! ${snapshot.error}"),
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (!snapshot.hasData) {
+                return Center(
+                  child: Text("No Tasks Found"),
+                );
               }
+
+              tasks = snapshot.data!.docs;
+
+              return ListView.builder(
+                reverse: true,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: tasks.length,
+                itemBuilder: ((context, index) {
+                  Todo task = Todo.fromJson(
+                      tasks[index].data() as Map<String, dynamic>);
+
+                  if (task.owner == Me.myId)
+                    return Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                        ),
+                        elevation: 2.0,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 15),
+                            ),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(left: 15),
+                                ),
+                                Text(
+                                  "Due ${task.deadline['day']}/${task.deadline['month']}/${task.deadline['year']}",
+                                  style: TextStyle(
+                                    color: Colors.pink,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            ListTile(
+                              title: Text("${task.title}"),
+                              subtitle: Text(
+                                "${task.description}",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                              leading: Checkbox(
+                                value: task.status,
+                                onChanged: (bool? value) {
+                                  if (context
+                                          .read<UserProvider>()
+                                          .selected
+                                          .id ==
+                                      Me.myId)
+                                    context
+                                        .read<TodoListProvider>()
+                                        .changeSelectedTodo(task);
+                                  if (context
+                                          .read<UserProvider>()
+                                          .selected
+                                          .id ==
+                                      Me.myId)
+                                    context
+                                        .read<TodoListProvider>()
+                                        .toggleStatus(value!);
+                                  if (context
+                                          .read<UserProvider>()
+                                          .selected
+                                          .id !=
+                                      Me.myId)
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                        content: Text(
+                                          "You cannot change the status of this task!",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        actions: [
+                                          Center(
+                                            child: TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text("OK"),
+                                              style: TextButton.styleFrom(
+                                                foregroundColor: Colors.pink,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                },
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      context
+                                          .read<TodoListProvider>()
+                                          .changeSelectedTodo(task);
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                          title: Text("Edit Task"),
+                                          content: SingleChildScrollView(
+                                            scrollDirection: Axis.vertical,
+                                            child: Container(
+                                              child: Form(
+                                                key: _formKeyEdit,
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Center(
+                                                      child: TextFormField(
+                                                        controller:
+                                                            titleEditController,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          hintText: "Task",
+                                                        ),
+                                                        onChanged:
+                                                            ((String? value) {
+                                                          value =
+                                                              titleEditController
+                                                                  .text;
+                                                        }),
+                                                        validator: (value) {
+                                                          if (value == null ||
+                                                              value.isEmpty) {
+                                                            return 'Required';
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                bottom: 10)),
+                                                    Center(
+                                                      child: TextFormField(
+                                                        controller:
+                                                            descriptionEditController,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          hintText:
+                                                              "Description",
+                                                        ),
+                                                        maxLines: null,
+                                                        onChanged:
+                                                            ((String? value) {
+                                                          value =
+                                                              descriptionEditController
+                                                                  .text;
+                                                        }),
+                                                        validator: (value) {
+                                                          if (value == null ||
+                                                              value.isEmpty) {
+                                                            return 'Required';
+                                                          } else if (value
+                                                                  .length >
+                                                              50) {
+                                                            return 'Must be less than 50 characters';
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                bottom: 20)),
+                                                    Text(
+                                                      "Deadline",
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Color.fromARGB(
+                                                            255, 115, 112, 112),
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: <Widget>[
+                                                        new Flexible(
+                                                          child: TextFormField(
+                                                            controller:
+                                                                dayEditController,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              hintText: "Day",
+                                                            ),
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            onChanged: ((String?
+                                                                value) {
+                                                              value =
+                                                                  dayEditController
+                                                                      .text;
+                                                            }),
+                                                            validator: (value) {
+                                                              if (value ==
+                                                                      null ||
+                                                                  value
+                                                                      .isEmpty) {
+                                                                return 'Required';
+                                                              } else if (int.parse(
+                                                                          value) <
+                                                                      1 ||
+                                                                  int.parse(
+                                                                          value) >
+                                                                      31) {
+                                                                return 'Invalid';
+                                                              }
+                                                            },
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 20.0,
+                                                        ),
+                                                        new Flexible(
+                                                          child: TextFormField(
+                                                            controller:
+                                                                monthEditController,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              hintText: "Month",
+                                                            ),
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            onChanged: ((String?
+                                                                value) {
+                                                              value =
+                                                                  monthEditController
+                                                                      .text;
+                                                            }),
+                                                            validator: (value) {
+                                                              if (value ==
+                                                                      null ||
+                                                                  value
+                                                                      .isEmpty) {
+                                                                return 'Required';
+                                                              } else if (int.parse(
+                                                                          value) <
+                                                                      1 ||
+                                                                  int.parse(
+                                                                          value) >
+                                                                      12) {
+                                                                return 'Invalid';
+                                                              }
+                                                            },
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 20.0,
+                                                        ),
+                                                        new Flexible(
+                                                          child: TextFormField(
+                                                            controller:
+                                                                yearEditController,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              hintText: "Year",
+                                                            ),
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            onChanged: ((String?
+                                                                value) {
+                                                              value =
+                                                                  yearEditController
+                                                                      .text;
+                                                            }),
+                                                            validator: (value) {
+                                                              if (value ==
+                                                                      null ||
+                                                                  value
+                                                                      .isEmpty) {
+                                                                return 'Required';
+                                                              } else if (value
+                                                                      .length !=
+                                                                  4) {
+                                                                return 'Invalid';
+                                                              }
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                bottom: 20)),
+                                                    Text(
+                                                      "Allow notifications?",
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Color.fromARGB(
+                                                            255, 115, 112, 112),
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child:
+                                                              DropdownButtonFormField<
+                                                                  String>(
+                                                            value:
+                                                                _dropdownOptions
+                                                                    .first,
+                                                            onChanged: (String?
+                                                                value) {
+                                                              if (value ==
+                                                                  "Yes") {
+                                                                Dropdown.dropdownValue =
+                                                                    true;
+                                                              } else {
+                                                                Dropdown.dropdownValue =
+                                                                    false;
+                                                              }
+                                                            },
+                                                            items: _dropdownOptions.map<
+                                                                DropdownMenuItem<
+                                                                    String>>(
+                                                              (String value) {
+                                                                return DropdownMenuItem<
+                                                                    String>(
+                                                                  value: value,
+                                                                  child: Text(
+                                                                      value),
+                                                                );
+                                                              },
+                                                            ).toList(),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  right: 200),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () async {
+                                                if (_formKeyEdit.currentState!
+                                                    .validate()) {
+                                                  _formKeyEdit.currentState
+                                                      ?.save();
+                                                  DateTime date =
+                                                      DateTime.now();
+                                                  String actualTimestamp = date
+                                                          .day
+                                                          .toString() +
+                                                      "/" +
+                                                      date.month.toString() +
+                                                      "/" +
+                                                      date.year.toString() +
+                                                      " " +
+                                                      date.hour.toString() +
+                                                      ":" +
+                                                      date.minute.toString();
+
+                                                  final docRefSelf =
+                                                      FirebaseTodoAPI.db
+                                                          .collection("users")
+                                                          .doc(Me.myId);
+                                                  await docRefSelf.get().then(
+                                                    (DocumentSnapshot
+                                                        doc) async {
+                                                      final dataSelf =
+                                                          doc.data() as Map<
+                                                              String, dynamic>;
+
+                                                      context
+                                                          .read<
+                                                              TodoListProvider>()
+                                                          .editTodo(
+                                                              "title",
+                                                              titleEditController
+                                                                  .text);
+
+                                                      context
+                                                          .read<
+                                                              TodoListProvider>()
+                                                          .editTodo(
+                                                              "description",
+                                                              descriptionEditController
+                                                                  .text);
+
+                                                      context
+                                                          .read<
+                                                              TodoListProvider>()
+                                                          .editTodo(
+                                                              "deadline", {
+                                                        'day': dayEditController
+                                                            .text,
+                                                        'month':
+                                                            monthEditController
+                                                                .text,
+                                                        'year':
+                                                            yearEditController
+                                                                .text
+                                                      });
+
+                                                      context
+                                                          .read<
+                                                              TodoListProvider>()
+                                                          .editTodo(
+                                                              "notifications",
+                                                              Dropdown
+                                                                  .dropdownValue);
+
+                                                      context
+                                                          .read<
+                                                              TodoListProvider>()
+                                                          .editTodo(
+                                                              "lastEdited",
+                                                              actualTimestamp);
+
+                                                      context
+                                                          .read<
+                                                              TodoListProvider>()
+                                                          .editTodo(
+                                                              "lastEditedBy",
+                                                              dataSelf[
+                                                                  'userName']);
+
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  );
+                                                }
+                                              },
+                                              child: Text("OK"),
+                                              style: TextButton.styleFrom(
+                                                foregroundColor: Colors.pink,
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text("Cancel"),
+                                              style: TextButton.styleFrom(
+                                                foregroundColor: Colors.pink,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.create_outlined),
+                                  ),
+                                  if (context
+                                          .read<UserProvider>()
+                                          .selected
+                                          .id ==
+                                      Me.myId)
+                                    IconButton(
+                                      onPressed: () {
+                                        context
+                                            .read<TodoListProvider>()
+                                            .changeSelectedTodo(task);
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              AlertDialog(
+                                            title: Text("Delete Task"),
+                                            content: Text(
+                                              "Are you sure you want to delete '${context.read<TodoListProvider>().selected.title}'?",
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () {
+                                                  context
+                                                      .read<TodoListProvider>()
+                                                      .deleteTodo();
+
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("OK"),
+                                                style: TextButton.styleFrom(
+                                                  foregroundColor: Colors.pink,
+                                                ),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("Cancel"),
+                                                style: TextButton.styleFrom(
+                                                  foregroundColor: Colors.pink,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                      icon: const Icon(Icons.delete_outlined),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "last edited ${task.lastEdited} by ${task.lastEditedBy}",
+                                  style: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                Padding(padding: EdgeInsets.only(right: 15)),
+                              ],
+                            ),
+                            Padding(padding: EdgeInsets.only(bottom: 15)),
+                          ],
+                        ),
+                      ),
+                    );
+                  return Container();
+                }),
+              );
             },
           ),
         if (!(context
@@ -369,685 +1118,6 @@ class _ProfilePageState extends State<ProfilePage>
           )
       ],
     );
-  }
-
-  //loops through friends
-  Future<Widget> loopThroughFriends(List? friends) async {
-    List<Widget> list = [];
-
-    if (friends == null) {
-      return Text("");
-    } else {
-      for (var i = 0; i < friends.length; i++) {
-        final docRefFriend =
-            FirebaseTodoAPI.db.collection("users").doc(friends[i]);
-        await docRefFriend.get().then(
-          (DocumentSnapshot doc) async {
-            final dataFriend = doc.data() as Map<String, dynamic>;
-
-            UserData friend = UserData.fromJson(dataFriend);
-
-            list.add(
-              Column(
-                children: [
-                  ListTile(
-                    title: Text(
-                      "${friend.firstName} ${friend.lastName}",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                    subtitle: Text(
-                      "${friend.userName}",
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey[500],
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                    leading: Icon(Icons.account_circle_rounded,
-                        size: 50.0, color: Colors.pink),
-                    onTap: () {
-                      context //makes sure friend user is passed when switching pages
-                          .read<UserProvider>()
-                          .changeSelectedUser(friend);
-                      Navigator.pushNamed(context, '/profile');
-                    },
-                  ),
-                  Divider(
-                    height: 30,
-                    thickness: 0.5,
-                    indent: 20,
-                    endIndent: 30,
-                    color: Color.fromARGB(255, 200, 200, 200),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      }
-      return Column(children: list);
-    }
-  }
-
-  //loops through received friend requests
-  Future<Widget> loopThroughReceivedRequests(List? friendRequests) async {
-    List<Widget> list = [];
-
-    if (friendRequests == null) {
-      return Text("");
-    } else {
-      for (var i = 0; i < friendRequests.length; i++) {
-        final docRefFriend =
-            FirebaseTodoAPI.db.collection("users").doc(friendRequests[i]);
-        await docRefFriend.get().then(
-          (DocumentSnapshot doc) async {
-            final dataFriend = doc.data() as Map<String, dynamic>;
-
-            UserData friend = UserData.fromJson(dataFriend);
-
-            list.add(
-              Padding(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  ),
-                  elevation: 1.0,
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: Text(
-                          "${friend.firstName} ${friend.lastName}",
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                        subtitle: Text(
-                          "${friend.userName}",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.grey[500],
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                        leading: Icon(Icons.account_circle_rounded,
-                            size: 50.0, color: Colors.pink),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                //makes sure user passed is passed to accept friend
-                                context
-                                    .read<UserProvider>()
-                                    .changeSelectedUser(friend);
-                                //calls accept friend
-                                context.read<UserProvider>().acceptFriend();
-                              },
-                              icon: Icon(Icons.check_circle,
-                                  color: Colors.grey[500]),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                //makes sure user passed is passed to decline friend
-                                context
-                                    .read<UserProvider>()
-                                    .changeSelectedUser(friend);
-                                //calls decline friend
-                                context.read<UserProvider>().declineFriend();
-                              },
-                              icon: Icon(Icons.remove_circle,
-                                  color: Colors.grey[500]),
-                            ),
-                          ],
-                        ),
-                        onTap: (() {
-                          context //makes sure friend user is passed when switching pages
-                              .read<UserProvider>()
-                              .changeSelectedUser(friend);
-                          Navigator.pushNamed(context, '/profile');
-                        }),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      }
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: Text(
-              "Pending Friend Requests",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Color.fromARGB(255, 115, 112, 112)),
-            ),
-          ),
-          Padding(padding: EdgeInsets.only(top: 10)),
-          Column(children: list),
-          Padding(padding: EdgeInsets.only(top: 20)),
-          if (context.read<UserProvider>().selected.friends!.isNotEmpty)
-            Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Text(
-                "Friends",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Color.fromARGB(255, 115, 112, 112)),
-              ),
-            ),
-          Padding(padding: EdgeInsets.only(top: 10)),
-        ],
-      );
-    }
-  }
-
-  //loops through sent friend requests
-  Future<Widget> loopThroughTodos(List? todos) async {
-    List<Widget> list = [];
-
-    if (todos == null) {
-      return Text("");
-    } else {
-      for (var i = 0; i < todos.length; i++) {
-        final docRefTodo = FirebaseTodoAPI.db.collection("todos").doc(todos[i]);
-        await docRefTodo.get().then(
-          (DocumentSnapshot doc) async {
-            final dataTodo = doc.data() as Map<String, dynamic>;
-
-            list.add(
-              Padding(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  ),
-                  elevation: 2.0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 15),
-                      ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 15),
-                          ),
-                          Text(
-                            "Due ${dataTodo['deadline']['day']}/${dataTodo['deadline']['month']}/${dataTodo['deadline']['year']}",
-                            style: TextStyle(
-                              color: Colors.pink,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ],
-                      ),
-                      ListTile(
-                        title: Text(dataTodo['title']),
-                        subtitle: Text(
-                          dataTodo['description'],
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                        leading: Checkbox(
-                          value: dataTodo['status'],
-                          onChanged: (bool? value) {
-                            if (context.read<UserProvider>().selected.id ==
-                                Me.myId)
-                              context
-                                  .read<TodoListProvider>()
-                                  .changeSelectedTodo(Todo.fromJson(dataTodo));
-                            if (context.read<UserProvider>().selected.id ==
-                                Me.myId)
-                              context
-                                  .read<TodoListProvider>()
-                                  .toggleStatus(value!);
-                            if (context.read<UserProvider>().selected.id !=
-                                Me.myId)
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                  content: Text(
-                                    "You cannot change the status of this task!",
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  actions: [
-                                    Center(
-                                      child: TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text("OK"),
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: Colors.pink,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                          },
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                context
-                                    .read<TodoListProvider>()
-                                    .changeSelectedTodo(
-                                        Todo.fromJson(dataTodo));
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      AlertDialog(
-                                    title: Text("Edit Task"),
-                                    content: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Container(
-                                        child: Form(
-                                          key: _formKeyEdit,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Center(
-                                                child: TextFormField(
-                                                  controller:
-                                                      titleEditController,
-                                                  decoration: InputDecoration(
-                                                    hintText: "Task",
-                                                  ),
-                                                  onChanged: ((String? value) {
-                                                    value = titleEditController
-                                                        .text;
-                                                  }),
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
-                                                      return 'Required';
-                                                    }
-                                                  },
-                                                ),
-                                              ),
-                                              Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 10)),
-                                              Center(
-                                                child: TextFormField(
-                                                  controller:
-                                                      descriptionEditController,
-                                                  decoration: InputDecoration(
-                                                    hintText: "Description",
-                                                  ),
-                                                  maxLines: null,
-                                                  onChanged: ((String? value) {
-                                                    value =
-                                                        descriptionEditController
-                                                            .text;
-                                                  }),
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
-                                                      return 'Required';
-                                                    } else if (value.length >
-                                                        50) {
-                                                      return 'Must be less than 50 characters';
-                                                    }
-                                                  },
-                                                ),
-                                              ),
-                                              Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 20)),
-                                              Text(
-                                                "Deadline",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Color.fromARGB(
-                                                      255, 115, 112, 112),
-                                                ),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: <Widget>[
-                                                  new Flexible(
-                                                    child: TextFormField(
-                                                      controller:
-                                                          dayEditController,
-                                                      decoration:
-                                                          InputDecoration(
-                                                        hintText: "Day",
-                                                      ),
-                                                      keyboardType:
-                                                          TextInputType.number,
-                                                      onChanged:
-                                                          ((String? value) {
-                                                        value =
-                                                            dayEditController
-                                                                .text;
-                                                      }),
-                                                      validator: (value) {
-                                                        if (value == null ||
-                                                            value.isEmpty) {
-                                                          return 'Required';
-                                                        } else if (int.parse(
-                                                                    value) <
-                                                                1 ||
-                                                            int.parse(value) >
-                                                                31) {
-                                                          return 'Invalid';
-                                                        }
-                                                      },
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 20.0,
-                                                  ),
-                                                  new Flexible(
-                                                    child: TextFormField(
-                                                      controller:
-                                                          monthEditController,
-                                                      decoration:
-                                                          InputDecoration(
-                                                        hintText: "Month",
-                                                      ),
-                                                      keyboardType:
-                                                          TextInputType.number,
-                                                      onChanged:
-                                                          ((String? value) {
-                                                        value =
-                                                            monthEditController
-                                                                .text;
-                                                      }),
-                                                      validator: (value) {
-                                                        if (value == null ||
-                                                            value.isEmpty) {
-                                                          return 'Required';
-                                                        } else if (int.parse(
-                                                                    value) <
-                                                                1 ||
-                                                            int.parse(value) >
-                                                                12) {
-                                                          return 'Invalid';
-                                                        }
-                                                      },
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 20.0,
-                                                  ),
-                                                  new Flexible(
-                                                    child: TextFormField(
-                                                      controller:
-                                                          yearEditController,
-                                                      decoration:
-                                                          InputDecoration(
-                                                        hintText: "Year",
-                                                      ),
-                                                      keyboardType:
-                                                          TextInputType.number,
-                                                      onChanged:
-                                                          ((String? value) {
-                                                        value =
-                                                            yearEditController
-                                                                .text;
-                                                      }),
-                                                      validator: (value) {
-                                                        if (value == null ||
-                                                            value.isEmpty) {
-                                                          return 'Required';
-                                                        } else if (value
-                                                                .length !=
-                                                            4) {
-                                                          return 'Invalid';
-                                                        }
-                                                      },
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 20)),
-                                              Text(
-                                                "Allow notifications?",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Color.fromARGB(
-                                                      255, 115, 112, 112),
-                                                ),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child:
-                                                        DropdownButtonFormField<
-                                                            String>(
-                                                      value: _dropdownOptions
-                                                          .first,
-                                                      onChanged:
-                                                          (String? value) {
-                                                        if (value == "Yes") {
-                                                          Dropdown.dropdownValue =
-                                                              true;
-                                                        } else {
-                                                          Dropdown.dropdownValue =
-                                                              false;
-                                                        }
-                                                      },
-                                                      items: _dropdownOptions
-                                                          .map<
-                                                              DropdownMenuItem<
-                                                                  String>>(
-                                                        (String value) {
-                                                          return DropdownMenuItem<
-                                                              String>(
-                                                            value: value,
-                                                            child: Text(value),
-                                                          );
-                                                        },
-                                                      ).toList(),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: 200),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () async {
-                                          if (_formKeyEdit.currentState!
-                                              .validate()) {
-                                            _formKeyEdit.currentState?.save();
-                                            DateTime date = DateTime.now();
-                                            String actualTimestamp =
-                                                date.day.toString() +
-                                                    "/" +
-                                                    date.month.toString() +
-                                                    "/" +
-                                                    date.year.toString() +
-                                                    " " +
-                                                    date.hour.toString() +
-                                                    ":" +
-                                                    date.minute.toString();
-
-                                            final docRefSelf = FirebaseTodoAPI
-                                                .db
-                                                .collection("users")
-                                                .doc(Me.myId);
-                                            await docRefSelf.get().then(
-                                              (DocumentSnapshot doc) async {
-                                                final dataSelf = doc.data()
-                                                    as Map<String, dynamic>;
-
-                                                print(dataSelf['userName']);
-
-                                                context
-                                                    .read<TodoListProvider>()
-                                                    .editTodo(
-                                                        "title",
-                                                        titleEditController
-                                                            .text);
-
-                                                context
-                                                    .read<TodoListProvider>()
-                                                    .editTodo(
-                                                        "description",
-                                                        descriptionEditController
-                                                            .text);
-
-                                                context
-                                                    .read<TodoListProvider>()
-                                                    .editTodo("deadline", {
-                                                  'day': dayEditController.text,
-                                                  'month':
-                                                      monthEditController.text,
-                                                  'year':
-                                                      yearEditController.text
-                                                });
-
-                                                context
-                                                    .read<TodoListProvider>()
-                                                    .editTodo("notifications",
-                                                        Dropdown.dropdownValue);
-
-                                                context
-                                                    .read<TodoListProvider>()
-                                                    .editTodo("lastEdited",
-                                                        actualTimestamp);
-
-                                                context
-                                                    .read<TodoListProvider>()
-                                                    .editTodo("lastEditedBy",
-                                                        dataSelf['userName']);
-
-                                                Navigator.of(context).pop();
-                                              },
-                                            );
-                                          }
-                                        },
-                                        child: Text("OK"),
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: Colors.pink,
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text("Cancel"),
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: Colors.pink,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.create_outlined),
-                            ),
-                            if (context.read<UserProvider>().selected.id ==
-                                Me.myId)
-                              IconButton(
-                                onPressed: () {
-                                  context
-                                      .read<TodoListProvider>()
-                                      .changeSelectedTodo(
-                                          Todo.fromJson(dataTodo));
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        AlertDialog(
-                                      title: Text("Delete Task"),
-                                      content: Text(
-                                        "Are you sure you want to delete '${context.read<TodoListProvider>().selected.title}'?",
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () {
-                                            context
-                                                .read<TodoListProvider>()
-                                                .deleteTodo();
-
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text("OK"),
-                                          style: TextButton.styleFrom(
-                                            foregroundColor: Colors.pink,
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text("Cancel"),
-                                          style: TextButton.styleFrom(
-                                            foregroundColor: Colors.pink,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                icon: const Icon(Icons.delete_outlined),
-                              ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "last edited ${dataTodo['lastEdited']} by ${dataTodo['lastEditedBy']}",
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontStyle: FontStyle.italic,
-                              fontSize: 15,
-                            ),
-                          ),
-                          Padding(padding: EdgeInsets.only(right: 15)),
-                        ],
-                      ),
-                      Padding(padding: EdgeInsets.only(bottom: 15)),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      }
-    }
-    return Column(children: list);
   }
 
   Widget floatingActionButton() {
@@ -1246,8 +1316,6 @@ class _ProfilePageState extends State<ProfilePage>
                         (DocumentSnapshot doc) async {
                           final dataSelf = doc.data() as Map<String, dynamic>;
 
-                          print(dataSelf['userName']);
-
                           Todo todo = Todo(
                             title: titleAddController.text,
                             description: descriptionAddController.text,
@@ -1260,6 +1328,7 @@ class _ProfilePageState extends State<ProfilePage>
                             notifications: Dropdown.dropdownValue,
                             lastEdited: actualTimestamp,
                             lastEditedBy: dataSelf['userName'],
+                            owner: Me.myId,
                           );
 
                           context.read<TodoListProvider>().addTodo(todo);
