@@ -1019,6 +1019,13 @@ class _ProfilePageState extends State<ProfilePage>
                                                             dataSelf[
                                                                 'userName']);
 
+                                                    titleEditController.clear();
+                                                    descriptionEditController
+                                                        .clear();
+                                                    dayEditController.clear();
+                                                    monthEditController.clear();
+                                                    yearEditController.clear();
+
                                                     Navigator.of(context).pop();
                                                   },
                                                 );
@@ -1031,6 +1038,12 @@ class _ProfilePageState extends State<ProfilePage>
                                           ),
                                           TextButton(
                                             onPressed: () {
+                                              titleEditController.clear();
+                                              descriptionEditController.clear();
+                                              dayEditController.clear();
+                                              monthEditController.clear();
+                                              yearEditController.clear();
+
                                               Navigator.of(context).pop();
                                             },
                                             child: Text("Cancel"),
@@ -1352,6 +1365,12 @@ class _ProfilePageState extends State<ProfilePage>
 
                           context.read<TodoListProvider>().addTodo(todo);
 
+                          titleAddController.clear();
+                          descriptionAddController.clear();
+                          dayAddController.clear();
+                          monthAddController.clear();
+                          yearAddController.clear();
+
                           Navigator.of(context).pop();
                         },
                       );
@@ -1364,6 +1383,12 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
                 TextButton(
                   onPressed: () {
+                    titleAddController.clear();
+                    descriptionAddController.clear();
+                    dayAddController.clear();
+                    monthAddController.clear();
+                    yearAddController.clear();
+
                     Navigator.of(context).pop();
                   },
                   child: Text("Cancel"),
