@@ -9,6 +9,7 @@ import 'package:project_teknomo/api/firebase_user_api.dart';
 import 'package:project_teknomo/api/firebase_todo_api.dart';
 import 'package:project_teknomo/classes/me.dart';
 import 'package:project_teknomo/classes/dropdown.dart';
+import 'package:project_teknomo/services/notifications.dart';
 
 //page of profile of each user (can access each user info because user was passed)
 class ProfilePage extends StatefulWidget {
@@ -38,6 +39,15 @@ class _ProfilePageState extends State<ProfilePage>
   TextEditingController yearEditController = TextEditingController();
 
   static final List<String> _dropdownOptions = ["Yes", "No"];
+
+  late final NotificationService service;
+
+  @override
+  void initState() {
+    service = NotificationService();
+    service.initializePlatformNotifications();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -219,18 +229,26 @@ class _ProfilePageState extends State<ProfilePage>
 
                       profile = snapshot.data!.docs;
 
-                      UserData self = UserData.fromJson(snapshot.data?.docs
-                          .firstWhere((doc) => doc.id == Me.myId)
-                          .data() as Map<String, dynamic>);
+                      return ListView.builder(
+                        reverse: true,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: profile.length,
+                        itemBuilder: ((context, index) {
+                          UserData friend = UserData.fromJson(
+                              profile[index].data() as Map<String, dynamic>);
 
-                      if (self.id == Me.myId)
-                        return Text("${self.bio}",
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 15,
-                            ),
-                            textAlign: TextAlign.justify);
-                      return Text("");
+                          if (context.read<UserProvider>().selected.id ==
+                              friend.id)
+                            return Text("${friend.bio}",
+                                style: TextStyle(
+                                  color: Colors.grey[500],
+                                  fontSize: 15,
+                                ),
+                                textAlign: TextAlign.center);
+                          return Container();
+                        }),
+                      );
                     },
                   ),
                 ),
@@ -318,12 +336,6 @@ class _ProfilePageState extends State<ProfilePage>
     List<DocumentSnapshot> friends = [];
     return ListView(
       children: [
-        // if (context.read<UserProvider>().selected.id == Me.myId &&
-        //     context
-        //         .read<UserProvider>()
-        //         .selected
-        //         .receivedFriendRequests!
-        //         .isNotEmpty)
         StreamBuilder(
           stream: FirebaseUserAPI.db.collection("users").snapshots(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -882,59 +894,6 @@ class _ProfilePageState extends State<ProfilePage>
                                                       ),
                                                     ],
                                                   ),
-                                                  Padding(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: 20)),
-                                                  Text(
-                                                    "Allow notifications?",
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: Color.fromARGB(
-                                                          255, 115, 112, 112),
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child:
-                                                            DropdownButtonFormField<
-                                                                String>(
-                                                          value:
-                                                              _dropdownOptions
-                                                                  .first,
-                                                          onChanged:
-                                                              (String? value) {
-                                                            if (value ==
-                                                                "Yes") {
-                                                              Dropdown.dropdownValue =
-                                                                  true;
-                                                            } else {
-                                                              Dropdown.dropdownValue =
-                                                                  false;
-                                                            }
-                                                          },
-                                                          items: _dropdownOptions
-                                                              .map<
-                                                                  DropdownMenuItem<
-                                                                      String>>(
-                                                            (String value) {
-                                                              return DropdownMenuItem<
-                                                                  String>(
-                                                                value: value,
-                                                                child:
-                                                                    Text(value),
-                                                              );
-                                                            },
-                                                          ).toList(),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                right: 200),
-                                                      ),
-                                                    ],
-                                                  )
                                                 ],
                                               ),
                                             ),
@@ -1000,14 +959,6 @@ class _ProfilePageState extends State<ProfilePage>
                                                     context
                                                         .read<
                                                             TodoListProvider>()
-                                                        .editTodo(
-                                                            "notifications",
-                                                            Dropdown
-                                                                .dropdownValue);
-
-                                                    context
-                                                        .read<
-                                                            TodoListProvider>()
                                                         .editTodo("lastEdited",
                                                             actualTimestamp);
 
@@ -1025,6 +976,22 @@ class _ProfilePageState extends State<ProfilePage>
                                                     dayEditController.clear();
                                                     monthEditController.clear();
                                                     yearEditController.clear();
+
+                                                    context
+                                                        .read<
+                                                            TodoListProvider>()
+                                                        .changeSelectedTodo(
+                                                            task);
+
+                                                    if (task
+                                                            .notifications ==
+                                                        true)
+                                                      await service.showNotification(
+                                                          id: 0,
+                                                          title:
+                                                              'Your task has been edited!',
+                                                          body:
+                                                              '${dataSelf['userName']} has edited your task ${task.title} at ${actualTimestamp}!');
 
                                                     Navigator.of(context).pop();
                                                   },
@@ -1141,13 +1108,13 @@ class _ProfilePageState extends State<ProfilePage>
               child: Text("Please add me as a friend to see my to do list!"),
             ),
           ),
-        if (context.read<UserProvider>().selected.todos!.isEmpty)
-          SizedBox(
-            height: 280,
-            child: Center(
-              child: Text("No todos yet!"),
-            ),
-          )
+        // if (context.read<UserProvider>().selected.todos!.isEmpty)
+        //   SizedBox(
+        //     height: 280,
+        //     child: Center(
+        //       child: Text("No todos yet!"),
+        //     ),
+        //   )
       ],
     );
   }
