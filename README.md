@@ -34,3 +34,5 @@
 - https://www.youtube.com/watch?v=Xinjf7AQUYA
 - https://stackoverflow.com/questions/50542771/stream-builder-from-firestore-to-flutter
 - https://www.folkstalk.com/2022/09/how-to-give-width-based-on-screen-size-flutter-with-code-examples.html
+- https://www.youtube.com/watch?v=Yrq2llD2Ldw
+- https://romannurik.github.io/AndroidAssetStudio/
