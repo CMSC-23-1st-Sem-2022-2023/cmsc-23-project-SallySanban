@@ -1,6 +1,44 @@
-# Project
+# Project: Shared Todo App
 
-## References
+**Name:** Johanna Eikou Teknomo<br>
+**Student Number:** 2019-07447<br>
+**Section:** C-6L
+
+# App/Program Description
+
+This app is a shared todo app. You can login and sign up into the app to add, accept, decline, and unfriend friends, search for users that you might want to friend, and access your friends' tasks or create your own.
+
+# Screenshots
+
+# Things you did in the code
+
+I mainly copy pasted the codes from my previous lab exercises, which were very helpful, and the code from Ma'am Kat's lecture video on notifications. I also worked the hardest on the UI for my app to have a pastel rainbow theme. I used different widgets that I've never used before, like the Card and TabBar.
+
+For my friend list and todos, something I implemented differently from my previous exers was that I used a StreamBuilder to show it on the profile page so that whenever a new todo was added, or if a todo was edited or deleted, it would immediately show on the screen without having to go back a page first. I also allowed users to edit their bios and I was able to have it change on the screen immediately by using a StreamBuilder as well.
+
+Another thing I implemented differently was the search page, which I got from a YouTube video. I mainly did it this way so that my UI would look nice, but I enjoyed implementing this because I was able to achieve filtering the list of users by typing a substring of their usernames or names.
+
+# Challenges faced
+
+The hardest part about this exer was using the StreamBuilder. Even though everything (literally every part of the project's functionality) could be copy pasted from the previous exers, I wanted to create an app with a really nice UI, and having the todos and friend list not appear immediately after changes have been made got me very annoyed, so I needed to use a StreamBuilder even though I'm not very familiar with its usage. It was really hard to get it to work alongside the TabBar, which I also wanted to implement because it looked nice, because I needed to filter out the snapshots retrieved by the StreamBuilder depending on the profile I'm looking at.
+
+# Test Cases
+
+## Happy Paths
+
+The following are the happy paths in the code (minimum 2) which are tested in `app_test.dart`:
+
+1. The user, when adding a task, should input valid information and after, the task should appear on the To Do List tab.
+2. The user's username, along with "Welcome back", should appear at the top of the screen after they login.
+
+## Unhappy Paths
+
+The following are the unhappy paths in the code (minimum 2) which are tested in `app_test.dart`:
+
+1. An error should appear when a user tries to change the status of a task that isn't theirs
+2. The user, when on someone else's profile page, should not be able to delete a task
+
+# References
 
 - https://stackoverflow.com/questions/52458555/how-i-can-view-floatingactionbutton-on-condition
 - https://stackoverflow.com/questions/54669630/flutter-auto-size-alertdialog-to-fit-list-content
