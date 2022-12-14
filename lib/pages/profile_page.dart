@@ -421,12 +421,12 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                             leading: Icon(Icons.account_circle_rounded,
                                 size: 50.0, color: Colors.pink),
-                            onTap: (() {
-                              context
-                                  .read<UserProvider>()
-                                  .changeSelectedUser(friend);
-                              Navigator.pushNamed(context, '/profile');
-                            }),
+                            // onTap: (() {
+                            //   context
+                            //       .read<UserProvider>()
+                            //       .changeSelectedUser(friend);
+                            //   Navigator.pushNamed(context, '/profile');
+                            // }),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -521,10 +521,10 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                     leading: Icon(Icons.account_circle_rounded,
                         size: 50.0, color: Colors.pink),
-                    onTap: () {
-                      context.read<UserProvider>().changeSelectedUser(friend);
-                      Navigator.pushNamed(context, '/profile');
-                    },
+                    // onTap: () {
+                    //   context.read<UserProvider>().changeSelectedUser(friend);
+                    //   Navigator.pushNamed(context, '/profile');
+                    // },
                   );
                 if (context
                         .read<UserProvider>()
@@ -550,10 +550,10 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                     leading: Icon(Icons.account_circle_rounded,
                         size: 50.0, color: Colors.pink),
-                    onTap: () {
-                      context.read<UserProvider>().changeSelectedUser(friend);
-                      Navigator.pushNamed(context, '/profile');
-                    },
+                    // onTap: () {
+                    //   context.read<UserProvider>().changeSelectedUser(friend);
+                    //   Navigator.pushNamed(context, '/profile');
+                    // },
                   );
                 return Container();
               }),
