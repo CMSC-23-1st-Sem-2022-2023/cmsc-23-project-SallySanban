@@ -6,15 +6,18 @@ import 'package:project_teknomo/models/user_model.dart';
 import 'package:project_teknomo/classes/me.dart';
 import 'package:project_teknomo/providers/user_provider.dart';
 
+//page for search bar
 class MySearchDelegate extends SearchDelegate {
   List<DocumentSnapshot> suggestions = [];
 
+  //back arrow
   @override
   Widget? buildLeading(BuildContext context) => IconButton(
         icon: Icon(Icons.arrow_back),
         onPressed: () => close(context, null),
       );
 
+  //clear icon
   @override
   List<Widget>? buildActions(BuildContext context) => [
         IconButton(
@@ -32,6 +35,8 @@ class MySearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) => Container();
 
+  //shows all users if no search and filters users (by username/name) if with search
+  //also shows add friend/unfriend button when applicable
   @override
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder(
@@ -77,21 +82,19 @@ class MySearchDelegate extends SearchDelegate {
                 .firstWhere((doc) => doc.id == Me.myId)
                 .data() as Map<String, dynamic>);
 
-            //initializes to 0 for every user
-            int checkIfFriend = 0; //0 if not in friends list
-            int checkIfRequestSent = 0; //0 if not requested
+            int checkIfFriend = 0;
+            int checkIfRequestSent = 0;
             int checkIfRequestReceived = 0;
-            //checks if user is already your friend or you have already sent a friend request to this user
-            //whether the add friend/unfriend button appears depends on this
+
             for (var i = 0; i < self.friends!.length; i++) {
               if (self.friends![i] == friend.id) {
-                checkIfFriend = 1; //1 if already in friends
+                checkIfFriend = 1;
               }
             }
 
             for (var i = 0; i < self.sentFriendRequests!.length; i++) {
               if (self.sentFriendRequests![i] == friend.id) {
-                checkIfRequestSent = 1; //1 if request already sent
+                checkIfRequestSent = 1;
               }
             }
 
@@ -144,24 +147,17 @@ class MySearchDelegate extends SearchDelegate {
                           onPressed: () {
                             context
                                 .read<UserProvider>()
-                                //makes sure the friend clicked on's user is passed to unfriend
                                 .changeSelectedUser(friend);
-                            context
-                                .read<UserProvider>()
-                                .unfriend(); //calls unfriend
+                            context.read<UserProvider>().unfriend();
                           },
                           icon: Icon(Icons.remove_circle,
                               color: Colors.grey[500]),
                         ),
                     ],
                   ),
-                  //[2]
                   onTap: () => {
-                    context //makes sure friend user is passed when switching pages
-                        .read<UserProvider>()
-                        .changeSelectedUser(friend),
-                    Navigator.pushNamed(
-                        context, '/profile'), //goes to profile of clicked user
+                    context.read<UserProvider>().changeSelectedUser(friend),
+                    Navigator.pushNamed(context, '/profile'),
                   },
                 ),
               );

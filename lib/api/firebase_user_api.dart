@@ -8,13 +8,15 @@ class FirebaseUserAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
   //static final db = FakeFirebaseFirestore();
 
-  //method for sending friend request (I sent to FRIEND)
+  //sends friend request (ME TO FRIEND)
   Future<String> sendFriendRequest(String? idFriend, String? idSelf) async {
     try {
+      //adds FRIEND to MY SENT REQUESTS
       await db.collection("users").doc(idSelf).update({
         'sentFriendRequests': FieldValue.arrayUnion([idFriend])
       });
 
+      //adds ME to FRIEND'S RECEIVED REQUESTS
       await db.collection("users").doc(idFriend).update({
         'receivedFriendRequests': FieldValue.arrayUnion([idSelf])
       });
@@ -25,14 +27,18 @@ class FirebaseUserAPI {
     }
   }
 
-  //method for accepting friend request
+  //accepts friend request (ME FROM FRIEND)
   Future<String> acceptFriend(String? idFriend, String? idSelf) async {
     try {
+      //adds FRIEND to MY FRIENDS
+      //removes FRIEND from MY RECEIVED REQUESTS
       await db.collection("users").doc(idSelf).update({
         'friends': FieldValue.arrayUnion([idFriend]),
         'receivedFriendRequests': FieldValue.arrayRemove([idFriend]),
       });
 
+      //adds ME to FRIEND'S FRIENDS
+      //removes ME from FRIEND'S SENT REQUESTS
       await db.collection("users").doc(idFriend).update({
         'friends': FieldValue.arrayUnion([idSelf]),
         'sentFriendRequests': FieldValue.arrayRemove([idSelf]),
@@ -44,12 +50,15 @@ class FirebaseUserAPI {
     }
   }
 
+  //declines friend request (ME FROM FRIEND)
   Future<String> declineFriend(String? idFriend, String? idSelf) async {
     try {
+      //removes FRIEND from MY RECEIVED REQUESTS
       await db.collection("users").doc(idSelf).update({
         'receivedFriendRequests': FieldValue.arrayRemove([idFriend]),
       });
 
+      //removes ME from FRIEND'S SENT REQUESTS
       await db.collection("users").doc(idFriend).update({
         'sentFriendRequests': FieldValue.arrayRemove([idSelf]),
       });
@@ -60,12 +69,15 @@ class FirebaseUserAPI {
     }
   }
 
+  //unfriends (ME TO FRIEND)
   Future<String> unfriend(String? idFriend, String? idSelf) async {
     try {
+      //removes FRIEND from MY FRIENDS
       await db.collection("users").doc(idSelf).update({
         'friends': FieldValue.arrayRemove([idFriend]),
       });
 
+      //removes ME from FRIEND'S FRIENDS
       await db.collection("users").doc(idFriend).update({
         'friends': FieldValue.arrayRemove([idSelf]),
       });
@@ -76,6 +88,7 @@ class FirebaseUserAPI {
     }
   }
 
+  //edits bio (ME)
   Future<String> editBio(String? id, String bio) async {
     try {
       await db.collection("users").doc(id).update({"bio": bio});

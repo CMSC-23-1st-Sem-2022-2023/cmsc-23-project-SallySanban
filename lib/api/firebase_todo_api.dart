@@ -10,6 +10,7 @@ class FirebaseTodoAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
   //static final db = FakeFirebaseFirestore();
 
+  //adds todo in todos collection and in todos list of owner
   Future<String> addTodo(Map<String, dynamic> todo) async {
     try {
       final docRef = await db.collection("todos").add(todo);
@@ -25,6 +26,7 @@ class FirebaseTodoAPI {
     }
   }
 
+  //deletes todo in todos collection and todos list of owner
   Future<String> deleteTodo(String? id) async {
     try {
       await db.collection("todos").doc(id).delete();
@@ -39,6 +41,7 @@ class FirebaseTodoAPI {
     }
   }
 
+  //edits todo in todos collection
   Future<String> editTodo(String? id, String toEdit, dynamic edited) async {
     try {
       await db.collection("todos").doc(id).update({"${toEdit}": edited});
@@ -49,6 +52,7 @@ class FirebaseTodoAPI {
     }
   }
 
+  //changes status of todo in todos collection
   Future<String> checkTodo(String? id, bool status) async {
     try {
       await db.collection("todos").doc(id).update({"status": status});
@@ -59,6 +63,7 @@ class FirebaseTodoAPI {
     }
   }
 
+  //gets all the todos from database
   Stream<QuerySnapshot> getAllTodos() {
     return db.collection("todos").snapshots();
   }

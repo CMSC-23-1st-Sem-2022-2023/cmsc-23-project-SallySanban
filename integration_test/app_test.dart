@@ -9,7 +9,7 @@ void main() {
   group('end-to-end test', () {
     testWidgets('Happy Path 1', (tester) async {
       app.main();
-      await addDelay(5000); //waits for login page to appear
+      await addDelay(5000); //waits for login to appear
       await tester.pumpAndSettle();
 
       //these are the widgets to find in the login page
@@ -23,20 +23,23 @@ void main() {
       expect(passwordFieldLoginPage, findsOneWidget);
       expect(loginButtonLoginPage, findsOneWidget);
 
-      await tester.enterText(emailFieldLoginPage, "1@gmail.com"); //first name
+      //types email and password
+      await tester.enterText(emailFieldLoginPage, "1@gmail.com"); //email
       await addDelay(5000);
       await tester.pumpAndSettle();
-      await tester.enterText(passwordFieldLoginPage, "Aa1234567*"); //first name
+      await tester.enterText(passwordFieldLoginPage, "Aa1234567*"); //password
       await addDelay(5000);
       await tester.pumpAndSettle();
 
-      //clicks sign up button to go to Todo screen
+      //clicks login
       await tester.tap(loginButtonLoginPage);
-      await addDelay(5000); //waits for Todo screen to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
+      //waits for Firebase
       await addDelay(20000);
-      //finds the profile display in the Friends page
+
+      //finds the welcome back
       final profileDisplay = find.text('Welcome back, SOYEON!');
 
       expect(profileDisplay, findsOneWidget);
@@ -60,28 +63,33 @@ void main() {
       expect(passwordFieldLoginPage, findsOneWidget);
       expect(loginButtonLoginPage, findsOneWidget);
 
-      await tester.enterText(emailFieldLoginPage, "1@gmail.com"); //first name
+      //types email and password
+      await tester.enterText(emailFieldLoginPage, "1@gmail.com"); //email
       await addDelay(5000);
       await tester.pumpAndSettle();
-      await tester.enterText(passwordFieldLoginPage, "Aa1234567*"); //first name
+      await tester.enterText(passwordFieldLoginPage, "Aa1234567*"); //password
       await addDelay(5000);
       await tester.pumpAndSettle();
 
-      //clicks sign up button to go to Todo screen
+      //clicks login
       await tester.tap(loginButtonLoginPage);
-      await addDelay(5000); //waits for Todo screen to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
+      //waits for Firebase
       await addDelay(20000);
-      //finds the profile display in the Friends page
+
+      //finds visit your profile
       final profileDisplay = find.text('Visit your profile');
 
       expect(profileDisplay, findsOneWidget);
 
+      //clicks on profile
       await tester.tap(profileDisplay);
-      await addDelay(5000); //waits for sign up page to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
+      //looks for user info and floating action button
       final nameDisplay = find.text('Soyeon Jeon');
       final usernameDisplay = find.text('SOYEON');
       final idDisplay = find.text("4ObGbnSSi5c7bKjDJpfj5AFqRtx1");
@@ -114,29 +122,33 @@ void main() {
       expect(passwordFieldLoginPage, findsOneWidget);
       expect(loginButtonLoginPage, findsOneWidget);
 
-      await tester.enterText(emailFieldLoginPage, "5@gmail.com"); //first name
+      //types someone else's email and password
+      await tester.enterText(emailFieldLoginPage, "5@gmail.com"); //email
       await addDelay(5000);
       await tester.pumpAndSettle();
-      await tester.enterText(passwordFieldLoginPage, "Aa1234567*"); //first name
+      await tester.enterText(passwordFieldLoginPage, "Aa1234567*"); //password
       await addDelay(5000);
       await tester.pumpAndSettle();
 
-      //clicks sign up button to go to Todo screen
+      //clicks login
       await tester.tap(loginButtonLoginPage);
-      await addDelay(5000); //waits for Todo screen to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
+      //waits for Firebase
       await addDelay(20000);
-      //finds the profile display in the Friends page
+
+      //finds friend's profile and clicks on friend's profile
       final profileDisplay = find.text('SOYEON');
 
       expect(profileDisplay, findsOneWidget);
 
       await tester.tap(profileDisplay);
-      await addDelay(5000); //waits for sign up page to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
-      await addDelay(20000);
+      //finds and clicks on To Do List tab of friend
+      await addDelay(20000); //waits for Firebase
       final todoTab = find.text("To Do List");
 
       expect(todoTab, findsOneWidget);
@@ -144,16 +156,19 @@ void main() {
       await tester.tap(todoTab);
       await tester.pumpAndSettle();
 
+      //waits for Firebase
       await addDelay(20000);
 
+      //finds and clicks the checkbox on friend's task
       final taskCheckbox = find.byKey(const Key("taskCheckbox"));
 
       expect(taskCheckbox, findsOneWidget);
 
       await tester.tap(taskCheckbox);
-      await addDelay(5000); //waits for sign up page to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
+      //finds error
       final error = find.text("You cannot change the status of this task!");
 
       expect(error, findsOneWidget);
@@ -165,15 +180,16 @@ void main() {
       await addDelay(5000); //waits for login page to appear
       await tester.pumpAndSettle();
 
-      //these are the widgets to find in the login page
+      //finds sign up tab and clicks it
       final signUpTab = find.text("Sign Up");
 
       expect(signUpTab, findsOneWidget);
 
       await tester.tap(signUpTab);
-      await addDelay(5000); //waits for sign up page to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
+      //these are the widgets to find in the sign up page
       final firstNameFieldSignupPage =
           find.byKey(const Key("firstNameFieldSignupPage"));
       final lastNameFieldSignupPage =
@@ -203,33 +219,33 @@ void main() {
       expect(passwordFieldSignupPage, findsOneWidget);
       expect(signUpButton, findsOneWidget);
 
+      //types sign up information
       await tester.enterText(firstNameFieldSignupPage, "Johanna"); //first name
       await addDelay(5000);
       await tester.pumpAndSettle();
-      await tester.enterText(lastNameFieldSignupPage, "Eikou"); //first name
+      await tester.enterText(lastNameFieldSignupPage, "Eikou"); //last name
       await addDelay(5000);
       await tester.pumpAndSettle();
-      await tester.enterText(
-          userNameFieldSignupPage, "SallySanban"); //first name
+      await tester.enterText(userNameFieldSignupPage, "SallySanban"); //username
       await addDelay(5000);
       await tester.pumpAndSettle();
-      await tester.enterText(dayFieldSignupPage, "16"); //first name
+      await tester.enterText(dayFieldSignupPage, "16"); //birthday
       await addDelay(5000);
       await tester.pumpAndSettle();
-      await tester.enterText(monthFieldSignupPage, "12"); //first name
+      await tester.enterText(monthFieldSignupPage, "12"); //birth month
       await addDelay(5000);
       await tester.pumpAndSettle();
-      await tester.enterText(yearFieldSignupPage, "2001"); //first name
+      await tester.enterText(yearFieldSignupPage, "2001"); //birth year
       await addDelay(5000);
       await tester.pumpAndSettle();
-      await tester.enterText(locationFieldSignupPage, "QC"); //first name
+      await tester.enterText(locationFieldSignupPage, "QC"); //location
       await addDelay(5000);
       await tester.pumpAndSettle();
-      await tester.enterText(
-          emailFieldSignupPage, "test@gmail.com"); //first name
+      await tester.enterText(emailFieldSignupPage, "test@gmail.com"); //email
       await addDelay(5000);
       await tester.pumpAndSettle();
 
+      //possible errors to find
       final notEnoughCharsError = find.text("Weak password");
       final needSpecialCharError =
           find.text("Must contain at least one special character");
@@ -239,14 +255,15 @@ void main() {
       final needUppercaseError =
           find.text("Must contain at least one uppercase letter");
 
+      //types in various wrong passwords
       await tester.enterText(
           passwordFieldSignupPage, "Aa12345"); //not enough characters
       await addDelay(5000);
       await tester.pumpAndSettle();
 
-      //clicks sign up button to go to Todo screen
+      //clicks sign up button to show error and looks for error
       await tester.tap(signUpButton);
-      await addDelay(5000); //waits for Todo screen to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
       expect(notEnoughCharsError, findsOneWidget);
@@ -256,9 +273,9 @@ void main() {
       await addDelay(5000);
       await tester.pumpAndSettle();
 
-      //clicks sign up button to go to Todo screen
+      //clicks sign up button to show error and looks for error
       await tester.tap(signUpButton);
-      await addDelay(5000); //waits for Todo screen to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
       expect(needSpecialCharError, findsOneWidget);
@@ -267,9 +284,9 @@ void main() {
       await addDelay(5000);
       await tester.pumpAndSettle();
 
-      //clicks sign up button to go to Todo screen
+      //clicks sign up button to show error and looks for error
       await tester.tap(signUpButton);
-      await addDelay(5000); //waits for Todo screen to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
       expect(needNumberError, findsOneWidget);
@@ -279,9 +296,9 @@ void main() {
       await addDelay(5000);
       await tester.pumpAndSettle();
 
-      //clicks sign up button to go to Todo screen
+      //clicks sign up button to show error and looks for error
       await tester.tap(signUpButton);
-      await addDelay(5000); //waits for Todo screen to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
       expect(needLowercaseError, findsOneWidget);
@@ -291,9 +308,9 @@ void main() {
       await addDelay(5000);
       await tester.pumpAndSettle();
 
-      //clicks sign up button to go to Todo screen
+      //clicks sign up button to show error and looks for error
       await tester.tap(signUpButton);
-      await addDelay(5000); //waits for Todo screen to appear
+      await addDelay(5000);
       await tester.pumpAndSettle();
 
       expect(needUppercaseError, findsOneWidget);
@@ -301,6 +318,7 @@ void main() {
   });
 }
 
+//adds delay
 Future<void> addDelay(int ms) async {
   await Future<void>.delayed(Duration(milliseconds: ms));
 }

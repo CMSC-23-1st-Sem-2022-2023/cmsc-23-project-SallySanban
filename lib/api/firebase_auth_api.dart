@@ -18,10 +18,12 @@ class FirebaseAuthAPI {
   //   ),
   // );
 
+  //gets user logged in
   Stream<User?> getUser() {
     return auth.authStateChanges();
   }
 
+  //signs in user
   Future<String?> signIn(String email, String password) async {
     UserCredential credential;
     try {
@@ -29,8 +31,6 @@ class FirebaseAuthAPI {
           email: email, password: password);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        //possible to return something more useful
-        //than just print an error message to improve UI/UX
         return 'There is no user found for that email.';
       } else if (e.code == 'wrong-password') {
         return 'Wrong password.';
@@ -40,6 +40,7 @@ class FirebaseAuthAPI {
     }
   }
 
+  //signs up user
   Future<String?> signUp(
       String email,
       String password,
@@ -61,8 +62,6 @@ class FirebaseAuthAPI {
             userName, day, month, year, location);
       }
     } on FirebaseAuthException catch (e) {
-      //possible to return something more useful
-      //than just print an error message to improve UI/UX
       if (e.code == 'weak-password') {
         return 'The password provided is too weak.';
       } else if (e.code == 'email-already-in-use') {
@@ -75,10 +74,12 @@ class FirebaseAuthAPI {
     }
   }
 
+  //signs out user
   void signOut() async {
     auth.signOut();
   }
 
+  //saves signed up user to database
   void saveUserToFirestore(
       String? uid,
       String email,

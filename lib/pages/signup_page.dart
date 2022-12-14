@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:project_teknomo/providers/auth_provider.dart';
 
+//page for signup and login
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
   @override
@@ -334,7 +335,6 @@ class _SignupPageState extends State<SignupPage> {
               shrinkWrap: true,
               padding: const EdgeInsets.only(left: 40.0, right: 40.0),
               children: [
-                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -345,7 +345,6 @@ class _SignupPageState extends State<SignupPage> {
                     new Flexible(child: lastName),
                   ],
                 ),
-                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 userName,
                 Padding(padding: EdgeInsets.only(bottom: 20)),
                 Text(
@@ -369,13 +368,9 @@ class _SignupPageState extends State<SignupPage> {
                     new Flexible(child: year),
                   ],
                 ),
-                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 location,
-                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 emailSignup,
-                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 passwordSignup,
-                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 SignupButton,
               ],
             ),
@@ -424,7 +419,7 @@ class _SignupPageState extends State<SignupPage> {
                   color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 5,
                   blurRadius: 7,
-                  offset: Offset(0, 3), // changes position of shadow
+                  offset: Offset(0, 3),
                 ),
               ],
             ),

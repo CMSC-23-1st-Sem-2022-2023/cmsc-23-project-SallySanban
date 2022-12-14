@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+//class for todo with todo information
 class Todo {
   final String? id;
   String title;
@@ -23,7 +24,7 @@ class Todo {
     required this.owner,
   });
 
-  // Factory constructor to instantiate object from json format
+  //creates todo from json information
   factory Todo.fromJson(Map<String, dynamic> json) {
     return Todo(
       id: json['id'],
@@ -43,6 +44,7 @@ class Todo {
     return data.map<Todo>((dynamic d) => Todo.fromJson(d)).toList();
   }
 
+  //turns todo's information to json information
   Map<String, dynamic> toJson(Todo todo) {
     return {
       'id': todo.id,

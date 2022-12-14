@@ -16,6 +16,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  //initializes providers for app
   runApp(
     MultiProvider(
       providers: [
@@ -28,10 +29,10 @@ void main() async {
   );
 }
 
+//initializes navigation routes for app
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+//goes to signup page if not authenticated, goes to friends page if authenticated
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 

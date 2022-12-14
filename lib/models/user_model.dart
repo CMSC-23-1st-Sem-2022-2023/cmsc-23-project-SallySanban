@@ -47,7 +47,6 @@ class UserData {
     );
   }
 
-  //?
   static List<UserData> fromJsonArray(String jsonData) {
     final Iterable<dynamic> data = jsonDecode(jsonData);
     return data.map<UserData>((dynamic d) => UserData.fromJson(d)).toList();

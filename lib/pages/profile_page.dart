@@ -171,7 +171,7 @@ class _ProfilePageState extends State<ProfilePage>
                   color: Colors.grey.withOpacity(0.2),
                   spreadRadius: 5,
                   blurRadius: 7,
-                  offset: Offset(0, 3), // changes position of shadow
+                  offset: Offset(0, 3),
                 ),
               ],
             ),
@@ -421,7 +421,7 @@ class _ProfilePageState extends State<ProfilePage>
                             leading: Icon(Icons.account_circle_rounded,
                                 size: 50.0, color: Colors.pink),
                             onTap: (() {
-                              context //makes sure friend user is passed when switching pages
+                              context
                                   .read<UserProvider>()
                                   .changeSelectedUser(friend);
                               Navigator.pushNamed(context, '/profile');
@@ -521,9 +521,7 @@ class _ProfilePageState extends State<ProfilePage>
                     leading: Icon(Icons.account_circle_rounded,
                         size: 50.0, color: Colors.pink),
                     onTap: () {
-                      context //makes sure friend user is passed when switching pages
-                          .read<UserProvider>()
-                          .changeSelectedUser(friend);
+                      context.read<UserProvider>().changeSelectedUser(friend);
                       Navigator.pushNamed(context, '/profile');
                     },
                   );
@@ -552,9 +550,7 @@ class _ProfilePageState extends State<ProfilePage>
                     leading: Icon(Icons.account_circle_rounded,
                         size: 50.0, color: Colors.pink),
                     onTap: () {
-                      context //makes sure friend user is passed when switching pages
-                          .read<UserProvider>()
-                          .changeSelectedUser(friend);
+                      context.read<UserProvider>().changeSelectedUser(friend);
                       Navigator.pushNamed(context, '/profile');
                     },
                   );
