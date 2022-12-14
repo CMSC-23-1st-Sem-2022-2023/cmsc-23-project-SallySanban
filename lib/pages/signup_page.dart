@@ -334,7 +334,7 @@ class _SignupPageState extends State<SignupPage> {
               shrinkWrap: true,
               padding: const EdgeInsets.only(left: 40.0, right: 40.0),
               children: [
-                Padding(padding: EdgeInsets.only(bottom: 10)),
+                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -345,7 +345,7 @@ class _SignupPageState extends State<SignupPage> {
                     new Flexible(child: lastName),
                   ],
                 ),
-                Padding(padding: EdgeInsets.only(bottom: 10)),
+                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 userName,
                 Padding(padding: EdgeInsets.only(bottom: 20)),
                 Text(
@@ -369,13 +369,13 @@ class _SignupPageState extends State<SignupPage> {
                     new Flexible(child: year),
                   ],
                 ),
-                Padding(padding: EdgeInsets.only(bottom: 10)),
+                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 location,
-                Padding(padding: EdgeInsets.only(bottom: 10)),
+                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 emailSignup,
-                Padding(padding: EdgeInsets.only(bottom: 10)),
+                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 passwordSignup,
-                Padding(padding: EdgeInsets.only(bottom: 50)),
+                //Padding(padding: EdgeInsets.only(bottom: 10)),
                 SignupButton,
               ],
             ),

@@ -8,7 +8,7 @@ import 'package:project_teknomo/classes/me.dart';
 class FirebaseTodoAPI {
   //comment out when testing
   static final FirebaseFirestore db = FirebaseFirestore.instance;
-  // final db = FakeFirebaseFirestore();
+  //static final db = FakeFirebaseFirestore();
 
   Future<String> addTodo(Map<String, dynamic> todo) async {
     try {

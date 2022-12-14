@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_teknomo/models/user_model.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 
 //the following methods edit the database in firebase
 class FirebaseUserAPI {
+  //comment out when testing
   static final FirebaseFirestore db = FirebaseFirestore.instance;
+  //static final db = FakeFirebaseFirestore();
 
   //method for sending friend request (I sent to FRIEND)
   Future<String> sendFriendRequest(String? idFriend, String? idSelf) async {

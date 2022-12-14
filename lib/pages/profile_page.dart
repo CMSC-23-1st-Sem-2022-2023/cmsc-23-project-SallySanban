@@ -661,6 +661,7 @@ class _ProfilePageState extends State<ProfilePage>
                               ),
                             ),
                             leading: Checkbox(
+                              key: Key("taskCheckbox"),
                               value: task.status,
                               onChanged: (bool? value) {
                                 if (context.read<UserProvider>().selected.id ==
@@ -1122,6 +1123,7 @@ class _ProfilePageState extends State<ProfilePage>
   Widget floatingActionButton() {
     if (context.read<UserProvider>().selected.id == Me.myId) {
       return FloatingActionButton(
+        key: Key("addTodoButton"),
         backgroundColor: Colors.pink,
         onPressed: () {
           showDialog(
@@ -1339,6 +1341,8 @@ class _ProfilePageState extends State<ProfilePage>
                           yearAddController.clear();
 
                           Navigator.of(context).pop();
+
+                          Dropdown.dropdownValue = true;
                         },
                       );
                     }
