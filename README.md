@@ -9,6 +9,12 @@
 This app is a shared todo app. You can login and sign up into the app to add, accept, decline, and unfriend friends, search for users that you might want to friend, and access your friends' tasks or create your own.
 
 # Screenshots
+![alt text](images/1.jpg)
+![alt text](images/2.jpg)
+![alt text](images/3.jpg)
+![alt text](images/4.jpg)
+![alt text](images/5.jpg)
+![alt text](images/6.jpg)
 
 # Things you did in the code
 
@@ -28,15 +34,15 @@ The hardest part about this exer was using the StreamBuilder. Even though everyt
 
 The following are the happy paths in the code (minimum 2) which are tested in `app_test.dart`:
 
-1. The user, when adding a task, should input valid information and after, the task should appear on the To Do List tab.
-2. The user's username, along with "Welcome back", should appear at the top of the screen after they login.
+1. The user, when logging in, should type their correct email and password, and if successful, the user's username, along with "Welcome back", should appear at the top of the screen.
+2. The user, when clicking on their profile, should be able to see their information at the top of the screen and a floating action button at the bottom of the screen.
 
 ## Unhappy Paths
 
 The following are the unhappy paths in the code (minimum 2) which are tested in `app_test.dart`:
 
-1. An error should appear when a user tries to change the status of a task that isn't theirs
-2. The user, when on someone else's profile page, should not be able to delete a task
+1. An error should appear when a user tries to change the status of a task that isn't theirs.
+2. The user should sign up with a password that's at least 8 characters with at least a number, a special character, and an uppercase letter, and a lowercase letter.
 
 # References
 
