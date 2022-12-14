@@ -332,6 +332,7 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
+  //builds friends tab
   Widget friendsTab() {
     List<DocumentSnapshot> friends = [];
     return ListView(
@@ -577,6 +578,7 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
+  //builds todo tab
   Widget todoTab() {
     List<DocumentSnapshot> tasks = [];
 
@@ -1116,6 +1118,7 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
+  //builds floating action button to add todo
   Widget floatingActionButton() {
     if (context.read<UserProvider>().selected.id == Me.myId) {
       return FloatingActionButton(
